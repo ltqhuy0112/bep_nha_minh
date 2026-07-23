@@ -15,6 +15,7 @@ export const adminPermissions = [
   "orders.cancel",
   "orders.update_status",
   "customers.view",
+  "waitlist.view",
   "analytics.view",
   "audit_logs.view",
   "admins.manage"
@@ -32,6 +33,7 @@ const permissionMap: Record<AdminRole, AdminPermission[]> = {
     "orders.cancel",
     "orders.update_status",
     "customers.view",
+    "waitlist.view",
     "analytics.view",
     "audit_logs.view"
   ],
@@ -48,6 +50,7 @@ const permissionMap: Record<AdminRole, AdminPermission[]> = {
     "admin.dashboard.view",
     "orders.view",
     "customers.view",
+    "waitlist.view",
     "analytics.view"
   ]
 };
