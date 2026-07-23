@@ -26,7 +26,8 @@ html {
 body {
   margin: 0;
   background:
-    radial-gradient(circle at top left, rgb(124 143 90 / 0.18), transparent 32rem),
+    radial-gradient(circle at 12% 0%, rgb(124 143 90 / 0.13), transparent 28rem),
+    radial-gradient(circle at 88% 16%, rgb(165 122 80 / 0.08), transparent 24rem),
     linear-gradient(180deg, #fff9ed 0%, #f8f0e1 42%, #fff9ed 100%);
   color: var(--color-text);
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
@@ -34,7 +35,6 @@ body {
 }
 
 a {
-  color: inherit;
   text-decoration: none;
 }
 
@@ -68,6 +68,145 @@ select {
 
 ::selection {
   background: rgb(79 100 61 / 0.22);
+}
+
+.botanical-section {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.botanical-section > .mx-auto {
+  position: relative;
+  z-index: 1;
+}
+
+.botanical-frame::before,
+.botanical-frame::after,
+.botanical-soft::before,
+.botanical-soft::after {
+  position: absolute;
+  z-index: 0;
+  width: clamp(9rem, 16vw, 16rem);
+  height: clamp(16rem, 30vw, 30rem);
+  pointer-events: none;
+  content: "";
+  opacity: 0.3;
+  filter: saturate(0.78) blur(0.1px);
+  background:
+    radial-gradient(ellipse 34% 13% at 42% 12%, rgb(79 100 61 / 0.5) 0 56%, transparent 58%),
+    radial-gradient(ellipse 34% 13% at 61% 25%, rgb(124 143 90 / 0.42) 0 56%, transparent 58%),
+    radial-gradient(ellipse 34% 13% at 40% 38%, rgb(79 100 61 / 0.4) 0 56%, transparent 58%),
+    radial-gradient(ellipse 34% 13% at 63% 51%, rgb(124 143 90 / 0.38) 0 56%, transparent 58%),
+    radial-gradient(ellipse 34% 13% at 41% 64%, rgb(79 100 61 / 0.34) 0 56%, transparent 58%),
+    radial-gradient(ellipse 34% 13% at 60% 77%, rgb(124 143 90 / 0.34) 0 56%, transparent 58%),
+    linear-gradient(101deg, transparent 47%, rgb(79 100 61 / 0.3) 48% 50%, transparent 51%);
+  background-repeat: no-repeat;
+}
+
+.botanical-frame::before {
+  top: -4.5rem;
+  left: -3.5rem;
+  transform: rotate(-24deg);
+}
+
+.botanical-frame::after {
+  right: -4rem;
+  bottom: -6rem;
+  transform: rotate(155deg);
+}
+
+.botanical-soft::before {
+  top: -7rem;
+  left: -5.5rem;
+  transform: rotate(-30deg) scale(0.86);
+}
+
+.botanical-soft::after {
+  right: -6rem;
+  bottom: -8rem;
+  transform: rotate(148deg) scale(0.9);
+}
+
+.botanical-soft::before,
+.botanical-soft::after {
+  opacity: 0.14;
+}
+
+.botanical-hero {
+  background:
+    radial-gradient(circle at 58% 48%, rgb(124 143 90 / 0.09), transparent 28rem),
+    linear-gradient(180deg, rgb(255 249 237 / 0.86), rgb(255 249 237 / 0.34));
+}
+
+.botanical-hero > .mx-auto::before {
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  left: 52%;
+  width: min(72vw, 48rem);
+  aspect-ratio: 1;
+  border: 1px solid rgb(124 143 90 / 0.2);
+  border-radius: 9999px;
+  background:
+    radial-gradient(circle at 38% 32%, rgb(255 249 237 / 0.58), transparent 18rem),
+    rgb(124 143 90 / 0.14);
+  box-shadow:
+    0 0 0 0.65rem rgb(255 249 237 / 0.56),
+    0 0 0 0.8rem rgb(124 143 90 / 0.12);
+  content: "";
+  transform: translate(-50%, -50%);
+}
+
+.botanical-hero > .mx-auto::after {
+  position: absolute;
+  z-index: -1;
+  right: 2rem;
+  bottom: -2.5rem;
+  width: min(42vw, 26rem);
+  height: min(18vw, 10rem);
+  border-radius: 9999px;
+  background: radial-gradient(ellipse, rgb(165 122 80 / 0.1), transparent 70%);
+  content: "";
+}
+
+.botanical-section.botanical-warm {
+  background:
+    radial-gradient(circle at 18% 8%, rgb(255 249 237 / 0.82), transparent 18rem),
+    radial-gradient(circle at 78% 72%, rgb(124 143 90 / 0.1), transparent 24rem),
+    rgb(239 230 212 / 0.55);
+}
+
+@media (max-width: 767px) {
+  .botanical-frame::before,
+  .botanical-frame::after,
+  .botanical-soft::before,
+  .botanical-soft::after {
+    width: 8rem;
+    height: 15rem;
+    opacity: 0.16;
+  }
+
+  .botanical-frame::before,
+  .botanical-soft::before {
+    left: -4.25rem;
+  }
+
+  .botanical-frame::after,
+  .botanical-soft::after {
+    right: -4.75rem;
+  }
+
+  .botanical-hero > .mx-auto::before {
+    top: 58%;
+    left: 64%;
+    width: 38rem;
+    opacity: 0.72;
+  }
+
+  .botanical-hero > .mx-auto::after {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

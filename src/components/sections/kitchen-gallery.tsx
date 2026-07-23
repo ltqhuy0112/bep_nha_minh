@@ -14,7 +14,7 @@ type KitchenGalleryProps = {
 
 export function KitchenGallery({ items, heading }: KitchenGalleryProps) {
   return (
-    <section className="py-16 md:py-24">
+    <section className="botanical-section botanical-soft py-16 md:py-24">
       <Container>
         <SectionHeading
           eyebrow={heading.eyebrow}

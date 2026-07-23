@@ -10,7 +10,10 @@ type WaitlistSectionProps = {
 
 export function WaitlistSection({ waitlist }: WaitlistSectionProps) {
   return (
-    <section id="waitlist" className="bg-beige-200/55 py-16 md:py-24">
+    <section
+      id="waitlist"
+      className="botanical-section botanical-frame botanical-warm py-16 md:py-24"
+    >
       <Container className="grid gap-10 md:grid-cols-[0.9fr_1.1fr] md:items-start">
         <MotionReveal>
           <SectionHeading

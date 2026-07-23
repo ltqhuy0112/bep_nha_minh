@@ -20,7 +20,7 @@ const iconMap: Record<string, string> = {
 
 export function BrandValues({ values, heading }: BrandValuesProps) {
   return (
-    <section className="py-16 md:py-20">
+    <section className="botanical-section botanical-soft py-16 md:py-20">
       <Container>
         <SectionHeading
           eyebrow={heading.eyebrow}

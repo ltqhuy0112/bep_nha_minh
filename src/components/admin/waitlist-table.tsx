@@ -9,7 +9,7 @@ export function WaitlistTable({
   if (leads.length === 0) {
     return (
       <div className="rounded-lg border border-dashed border-olive-700/20 bg-white p-8 text-center text-muted">
-        Chưa có người ghi danh phù hợp với bộ lọc.
+        Chưa có người đặt hàng phù hợp với bộ lọc.
       </div>
     );
   }
@@ -20,7 +20,7 @@ export function WaitlistTable({
         <table className="w-full min-w-[920px] border-collapse text-left text-sm">
           <thead className="bg-beige-200/50 text-xs uppercase text-muted">
             <tr>
-              <th className="px-4 py-3">Người ghi danh</th>
+              <th className="px-4 py-3">Người đặt hàng</th>
               <th className="px-4 py-3">Liên hệ</th>
               <th className="px-4 py-3">Khu vực</th>
               <th className="px-4 py-3">Bữa ăn</th>
