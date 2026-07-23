@@ -9,7 +9,10 @@ type StorySectionProps = {
 
 export function StorySection({ story }: StorySectionProps) {
   return (
-    <section id="story" className="bg-white/55 py-16 md:py-24">
+    <section
+      id="story"
+      className="botanical-section botanical-soft bg-white/55 py-16 md:py-24"
+    >
       <Container className="grid gap-10 md:grid-cols-[0.9fr_1.1fr] md:items-center">
         <MotionReveal>
           <SectionHeading eyebrow={story.eyebrow} title={story.title} />

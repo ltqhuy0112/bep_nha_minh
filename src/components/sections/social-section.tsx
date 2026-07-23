@@ -10,7 +10,7 @@ type SocialSectionProps = {
 
 export function SocialSection({ social }: SocialSectionProps) {
   return (
-    <section id="contact" className="py-16 md:py-24">
+    <section id="contact" className="botanical-section botanical-soft py-16 md:py-24">
       <Container>
         <MotionReveal className="rounded-[28px] border border-olive-700/10 bg-white p-7 shadow-soft md:p-10">
           <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-center">

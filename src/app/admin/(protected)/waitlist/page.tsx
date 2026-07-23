@@ -29,7 +29,7 @@ export default async function AdminWaitlistPage({
             Waitlist
           </p>
           <h1 className="mt-2 font-serif text-4xl text-olive-900">
-            Ghi danh mở bán
+            Đặt hàng mở bán
           </h1>
           <p className="mt-2 text-sm text-muted">
             Danh sách người để lại thông tin nhận thông báo khi Bếp Nhà Mình mở bán.
@@ -86,7 +86,7 @@ export default async function AdminWaitlistPage({
         page={leads.pagination.page}
         totalItems={leads.pagination.totalItems}
         totalPages={leads.pagination.totalPages}
-        itemLabel="người ghi danh"
+        itemLabel="người đặt hàng"
       />
     </div>
   );

@@ -10,7 +10,10 @@ type HeroSectionProps = {
 
 export function HeroSection({ hero }: HeroSectionProps) {
   return (
-    <section id="home" className="overflow-hidden pb-16 pt-10 md:pb-24 md:pt-16">
+    <section
+      id="home"
+      className="botanical-section botanical-frame botanical-hero pb-16 pt-10 md:pb-24 md:pt-16"
+    >
       <Container className="grid gap-10 md:grid-cols-[0.9fr_1.1fr] md:items-center">
         <MotionReveal>
           <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-wood-500">

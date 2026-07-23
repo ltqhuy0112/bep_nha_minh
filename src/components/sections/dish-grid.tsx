@@ -16,7 +16,7 @@ type DishGridProps = {
 
 export function DishGrid({ dishes, heading }: DishGridProps) {
   return (
-    <section id="meals" className="py-16 md:py-24">
+    <section id="meals" className="botanical-section botanical-soft py-16 md:py-24">
       <Container>
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <SectionHeading
