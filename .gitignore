@@ -8,6 +8,7 @@ out/
 dist/
 coverage/
 tsconfig.tsbuildinfo
+.vercel/
 
 # Environment files
 .env
@@ -22,6 +23,8 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 dev-*.log
+playwright-report/
+test-results/
 
 # Local editor and tool state
 .vscode/
