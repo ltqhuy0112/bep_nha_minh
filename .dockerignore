@@ -1,0 +1,12 @@
+.git
+.next
+node_modules
+npm-debug.log*
+Dockerfile
+docker-compose.yml
+.dockerignore
+.env
+.env*.local
+tsconfig.tsbuildinfo
+mockup_project.png
+promt.md

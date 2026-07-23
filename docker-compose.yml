@@ -1,0 +1,113 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: bep-nha-minh-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-bep_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-bep_password}
+      POSTGRES_DB: ${POSTGRES_DB:-bep_nha_minh}
+    ports:
+      - "5432:5432"
+    volumes:
+      - bep-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U $${POSTGRES_USER:-bep_user} -d $${POSTGRES_DB:-bep_nha_minh}"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+    networks:
+      - bep-network
+
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: tools
+    container_name: bep-nha-minh-migrate
+    working_dir: /app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-bep_user}:${POSTGRES_PASSWORD:-bep_password}@postgres:5432/${POSTGRES_DB:-bep_nha_minh}
+    command: npm run db:up
+    networks:
+      - bep-network
+    restart: "no"
+
+  seed:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: tools
+    container_name: bep-nha-minh-seed
+    working_dir: /app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-bep_user}:${POSTGRES_PASSWORD:-bep_password}@postgres:5432/${POSTGRES_DB:-bep_nha_minh}
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+      BUSINESS_TIMEZONE: ${BUSINESS_TIMEZONE:-Asia/Ho_Chi_Minh}
+      AUTH_SECRET: ${AUTH_SECRET:-dev-only-change-this-admin-auth-secret}
+      NEXT_PUBLIC_INSTAGRAM_URL: ${NEXT_PUBLIC_INSTAGRAM_URL:-}
+      NEXT_PUBLIC_FACEBOOK_URL: ${NEXT_PUBLIC_FACEBOOK_URL:-}
+      NEXT_PUBLIC_TIKTOK_URL: ${NEXT_PUBLIC_TIKTOK_URL:-}
+    command: npm run db:seed
+    networks:
+      - bep-network
+    restart: "no"
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bep-nha-minh-web
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      seed:
+        condition: service_completed_successfully
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      HOSTNAME: 0.0.0.0
+      DATABASE_URL: postgresql://${POSTGRES_USER:-bep_user}:${POSTGRES_PASSWORD:-bep_password}@postgres:5432/${POSTGRES_DB:-bep_nha_minh}
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+      BUSINESS_TIMEZONE: ${BUSINESS_TIMEZONE:-Asia/Ho_Chi_Minh}
+      AUTH_SECRET: ${AUTH_SECRET:-dev-only-change-this-admin-auth-secret}
+      NEXT_PUBLIC_INSTAGRAM_URL: ${NEXT_PUBLIC_INSTAGRAM_URL:-}
+      NEXT_PUBLIC_FACEBOOK_URL: ${NEXT_PUBLIC_FACEBOOK_URL:-}
+      NEXT_PUBLIC_TIKTOK_URL: ${NEXT_PUBLIC_TIKTOK_URL:-}
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    networks:
+      - bep-network
+
+volumes:
+  bep-postgres-data:
+
+networks:
+  bep-network:
+    driver: bridge

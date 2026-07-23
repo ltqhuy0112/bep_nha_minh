@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="Bếp Nhà Mình">
+  <rect width="1200" height="630" fill="#FFF9ED"/>
+  <rect x="80" y="80" width="1040" height="470" rx="48" fill="#26351F"/>
+  <circle cx="920" cy="315" r="150" fill="#EFE6D4" opacity="0.95"/>
+  <path d="M844 360c0 58 47 91 106 91s106-33 106-91H844Z" fill="#4F643D"/>
+  <path d="M950 360V188M950 265c-68-58-125-41-138 21 61 18 103 9 138-21Zm0 0c68-58 125-41 138 21-61 18-103 9-138-21Z" fill="none" stroke="#4F643D" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="140" y="250" fill="#FFF9ED" font-family="Georgia, serif" font-size="76" font-weight="700">Bếp Nhà Mình</text>
+  <text x="140" y="330" fill="#EFE6D4" font-family="Arial, sans-serif" font-size="34">Healthy food làm mới theo đơn</text>
+  <text x="140" y="390" fill="#EFE6D4" font-family="Arial, sans-serif" font-size="28">Bữa ăn lành mạnh từ căn bếp nhỏ</text>
+</svg>

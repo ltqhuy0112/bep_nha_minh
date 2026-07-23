@@ -1,0 +1,6 @@
+interface:
+  display_name: "Bếp Nhà Mình Phase Runner"
+  short_description: "Project workflow guardrails and MCP usage"
+  default_prompt: "Use $bep-nha-minh-phase-runner to continue the next approved phase of this project safely."
+policy:
+  allow_implicit_invocation: true
