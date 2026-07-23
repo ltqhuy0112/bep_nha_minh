@@ -4,6 +4,8 @@ Lightweight brand bio website for **Bếp Nhà Mình**, backed by PostgreSQL for
 
 This is not a public e-commerce system. It has no public cart, checkout, payment, inventory, customer accounts, accounting, payroll, delivery-driver app, or payment reconciliation.
 
+Current public features include Vietnamese/English pages, waitlist signup, SEO metadata, structured data, sitemap/robots, OpenAPI documentation, botanical brand styling, fixed hotline contact, and scroll-to-top controls.
+
 ## Prerequisites
 
 - Node.js 22+
@@ -27,6 +29,18 @@ POSTGRES_PASSWORD=bep_password
 POSTGRES_DB=bep_nha_minh
 ```
 
+Recommended public metadata values for shared environments:
+
+```text
+NEXT_PUBLIC_SITE_URL=https://your-production-domain.example
+NEXT_PUBLIC_CONTACT_EMAIL=hello@your-domain.example
+NEXT_PUBLIC_INSTAGRAM_URL=https://instagram.com/your-profile
+NEXT_PUBLIC_FACEBOOK_URL=https://facebook.com/your-page
+NEXT_PUBLIC_TIKTOK_URL=https://tiktok.com/@your-profile
+```
+
+Keep secrets such as `DATABASE_URL`, `AUTH_SECRET`, `ADMIN_PASSWORD`, and database credentials server-only. Do not add `NEXT_PUBLIC_` to secret values.
+
 ## Mode 1: Full Docker
 
 Use this mode when you want Docker to run PostgreSQL, migrations, seed data, and the production Next.js web/API server.
@@ -42,6 +56,7 @@ http://localhost:3000
 http://localhost:3000/vi
 http://localhost:3000/en
 http://localhost:3000/admin/login
+http://localhost:3000/api/docs
 ```
 
 Check status:
@@ -220,6 +235,10 @@ http://localhost:3000/admin/login
 http://localhost:3000/admin
 http://localhost:3000/admin/orders
 http://localhost:3000/admin/customers
+http://localhost:3000/admin/waitlist
+http://localhost:3000/admin/audit-logs
+http://localhost:3000/api/docs
+http://localhost:3000/api/openapi.json
 ```
 
 Admin APIs:
@@ -233,7 +252,28 @@ POST  /api/admin/orders/[orderId]/cancel
 PATCH /api/admin/orders/[orderId]/status
 GET   /api/admin/customers
 GET   /api/admin/analytics/orders?range=7d
+GET   /api/admin/session
 ```
+
+Public APIs and docs:
+
+```text
+GET  /api/health
+GET  /api/site-content
+POST /api/waitlist
+GET  /api/docs
+GET  /api/openapi.json
+```
+
+SEO routes:
+
+```text
+GET /sitemap.xml
+GET /robots.txt
+GET /site.webmanifest
+```
+
+`/admin`, `/api/admin`, `/api/auth`, `/api/docs`, and `/api/openapi.json` are configured to avoid search indexing.
 
 ## Project Structure
 
@@ -255,6 +295,16 @@ src/
   db/                 database client and queries
   lib/                validation, auth/session, formatting, env helpers
   services/           admin order/customer/analytics services
+```
+
+Notable public UI components:
+
+```text
+src/components/layout/floating-actions.tsx   fixed hotline and scroll-to-top
+src/app/api/docs/route.ts                    Swagger UI
+src/app/api/openapi.json/route.ts            OpenAPI JSON
+src/lib/openapi.ts                           OpenAPI schema source
+src/lib/site.ts                              shared brand, SEO, hotline, social metadata
 ```
 
 ## Troubleshooting
@@ -293,3 +343,4 @@ npm run start
 - Demo admin credentials are development-only and should be replaced before shared use.
 - Add rate limiting before public production launch.
 - Do not expose PostgreSQL publicly in production.
+- Keep `/admin` and internal API docs behind private operational access for real production.
