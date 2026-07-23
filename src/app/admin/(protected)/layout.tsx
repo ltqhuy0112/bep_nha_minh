@@ -20,6 +20,11 @@ const navItems = [
     permission: "customers.view"
   },
   {
+    label: "Waitlist",
+    href: "/admin/waitlist",
+    permission: "waitlist.view"
+  },
+  {
     label: "Audit logs",
     href: "/admin/audit-logs",
     permission: "audit_logs.view"
