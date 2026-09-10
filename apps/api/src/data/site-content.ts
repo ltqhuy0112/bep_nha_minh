@@ -9,10 +9,6 @@ const socialLinks = [
   {
     label: "Facebook",
     href: process.env.NEXT_PUBLIC_FACEBOOK_URL || "https://facebook.com/profile.php?id=61591894748199"
-  },
-  {
-    label: "TikTok",
-    href: process.env.NEXT_PUBLIC_TIKTOK_URL || "https://tiktok.com/"
   }
 ];
 
@@ -22,32 +18,31 @@ export const siteContents: Record<Locale, SiteContent> = {
     nav: [
       { label: "Trang chủ", href: "#home" },
       { label: "Câu chuyện", href: "#story" },
-      { label: "Món ăn", href: "#meals" },
       { label: "Quy trình", href: "#workflow" },
       { label: "Liên hệ", href: "#contact" }
     ],
     header: {
       brandAriaLabel: "Bếp Nhà Mình về đầu trang",
       tagline: "Healthy food làm mới theo đơn",
-      waitlistCta: "Đặt hàng",
+      waitlistCta: "Nhận thông báo",
       menuAriaLabel: "Mở menu",
       desktopNavAriaLabel: "Điều hướng chính",
       mobileNavAriaLabel: "Điều hướng di động",
       languageLabel: "Ngôn ngữ"
     },
     hero: {
-      eyebrow: "Healthy food làm mới theo đơn",
-      headline: "Bữa ăn lành mạnh từ căn bếp nhỏ",
+      eyebrow: "BẾP NHÀ MÌNH · HEALTHY FOOD TP.HCM",
+      headline: "Bếp Nhà Mình",
       supportingText:
-        "Healthy food TP.HCM làm mới theo đơn, dành cho bữa trưa, bữa tối và những ngày bận rộn cần ăn gọn mà vẫn đủ chất.",
-      primaryCta: "Theo dõi hành trình",
+        "Bếp chuẩn bị từng phần ăn theo đơn, cân bằng rau, đạm và tinh bột để bạn ăn gọn mà vẫn đủ chất.",
+      primaryCta: "Xem thực đơn dự kiến",
       secondaryCta: "Nhận thông báo mở bán",
       image:
         "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=1200&q=85",
-      alt: "Tô cơm healthy nhiều rau củ, trứng và nguyên liệu tươi",
+      alt: "Ảnh minh họa phần ăn lành mạnh",
       floatingLabel: "Nấu mới trong ngày",
-      preorderCardTitle: "Pre-order nhỏ gọn",
-      preorderCardText: "Không giỏ hàng, không thanh toán online."
+      preorderCardTitle: "Bếp đang chuẩn bị mở bán",
+      preorderCardText: "Để lại thông tin để nhận ngày mở bán và catalog mới nhất."
     },
     sectionHeadings: {
       values: {
@@ -62,9 +57,9 @@ export const siteContents: Record<Locale, SiteContent> = {
       },
       workflow: {
         eyebrow: "Quy trình pre-order",
-        title: "Bếp nhận trước, nấu mới và giữ mọi thứ thật đơn giản.",
+        title: "Từ xem món đến nhận lịch mở bán.",
         description:
-          "Quy trình này chỉ giải thích cách bếp dự kiến nhận thông tin, không phải luồng mua hàng trực tuyến."
+          "Bếp liên hệ khi bắt đầu nhận đơn."
       },
       kitchen: {
         eyebrow: "Một ngày trong bếp",
@@ -95,12 +90,12 @@ export const siteContents: Record<Locale, SiteContent> = {
     ],
     story: {
       eyebrow: "Câu chuyện căn bếp",
-      title: "Nấu như cho người nhà, phục vụ như một lời hẹn tử tế.",
+      title: "Một căn bếp nhỏ, nấu theo đơn tại TP.HCM.",
       body: [
-        "Bếp Nhà Mình bắt đầu từ mong muốn làm những phần ăn lành mạnh, dễ ăn và không cầu kỳ cho người bận rộn tại TP.HCM.",
-        "Thay vì mở bán đại trà, bếp chọn cách nhận đăng ký trước để chuẩn bị nguyên liệu vừa đủ, nấu mới trong ngày và giữ nhịp vận hành nhỏ gọn cho các phần cơm healthy, salad và meal prep."
+        "Bếp Nhà Mình là một căn bếp nhỏ tại TP.HCM, nấu từng phần ăn theo đơn để giữ độ tươi.",
+        "Chuẩn bị theo số lượng dự kiến giúp bếp chăm chút từng phần và hạn chế lãng phí nguyên liệu."
       ],
-      note: "Hiện bếp đang hoàn thiện menu mở bán cho một số khu vực nội thành TP.HCM. Thông tin trên website là nội dung giới thiệu và đặt hàng chờ."
+      note: "Bếp đang cập nhật menu theo từng đợt trước ngày mở bán."
     },
     dishes: [
       {
@@ -139,28 +134,18 @@ export const siteContents: Record<Locale, SiteContent> = {
     workflow: [
       {
         step: "01",
-        title: "Xem menu",
-        description: "Menu dự kiến được thông báo theo từng đợt mở bán."
+        title: "Chọn món dự kiến",
+        description: "Xem catalog món bếp đang hoàn thiện."
       },
       {
         step: "02",
-        title: "Nhắn tin hoặc đăng ký",
-        description: "Bạn để lại thông tin để bếp gửi thông báo sớm."
+        title: "Đăng ký nhận lịch mở bán",
+        description: "Để lại số điện thoại để nhận catalog mới nhất."
       },
       {
         step: "03",
-        title: "Bếp xác nhận",
-        description: "Bếp xác nhận số lượng, khu vực và thời gian phù hợp."
-      },
-      {
-        step: "04",
-        title: "Chuẩn bị và nấu mới",
-        description: "Nguyên liệu được chuẩn bị theo đơn đã xác nhận."
-      },
-      {
-        step: "05",
-        title: "Giao món",
-        description: "Món được đóng gói gọn gàng và giao trong khung hẹn."
+        title: "Bếp liên hệ khi bắt đầu nhận đơn",
+        description: "Bếp xác nhận ngày mở bán và khung giao tại TP.HCM."
       }
     ],
     kitchen: [
@@ -187,19 +172,19 @@ export const siteContents: Record<Locale, SiteContent> = {
       }
     ],
     waitlist: {
-      eyebrow: "Đặt hàng chờ",
-      title: "Nhận thông báo khi Bếp Nhà Mình mở bán",
+      eyebrow: "Waitlist",
+      title: "Nhận thông báo khi bếp mở bán",
       description:
-        "Để lại khu vực và bữa ăn bạn quan tâm. Bếp chỉ dùng thông tin này để gửi thông báo mở bán healthy food, cơm healthy và meal prep tại TP.HCM.",
+        "Để lại số điện thoại để nhận ngày mở bán và catalog mới nhất.",
       successMessage:
         "Bếp đã nhận được thông tin của bạn. Khi menu mở bán, Bếp Nhà Mình sẽ gửi thông báo sớm nhất.",
       note:
-        "Biểu mẫu dùng để đặt hàng chờ thông báo mở bán, không tạo đơn hàng và không xử lý thanh toán.",
+        "Số điện thoại giúp bếp gửi thông báo nhanh. Email là tùy chọn.",
       form: {
         name: "Tên",
         district: "Khu vực/quận",
         phone: "Số điện thoại",
-        email: "Email",
+        email: "Email (không bắt buộc)",
         preferredMeal: "Bữa ăn quan tâm",
         submit: "Nhận thông báo mở bán",
         loading: "Đang kiểm tra...",
@@ -210,14 +195,14 @@ export const siteContents: Record<Locale, SiteContent> = {
       }
     },
     social: {
-      title: "Theo dõi hành trình của bếp",
+      title: "Liên hệ với Bếp Nhà Mình",
       description:
-        "Menu thử nghiệm, hình ảnh chuẩn bị món, khu vực giao dự kiến và lịch mở bán healthy food TP.HCM sẽ được cập nhật trên mạng xã hội.",
+        "Hotline 091 544 2787 · TP.HCM · Nhận đơn 08:30–16:30.",
       links: socialLinks
     },
     footer: {
       description:
-        "Website giới thiệu thương hiệu healthy food TP.HCM và đặt hàng chờ. Địa chỉ, giờ mở bán và thông tin liên hệ chính thức sẽ được cập nhật khi bếp sẵn sàng."
+        "Bếp Nhà Mình · Healthy food làm mới theo đơn. TP.HCM · Hotline 091 544 2787 · Nhận đơn 08:30–16:30."
     }
   },
   en: {
@@ -225,7 +210,6 @@ export const siteContents: Record<Locale, SiteContent> = {
     nav: [
       { label: "Home", href: "#home" },
       { label: "Story", href: "#story" },
-      { label: "Meals", href: "#meals" },
       { label: "Workflow", href: "#workflow" },
       { label: "Contact", href: "#contact" }
     ],
@@ -239,18 +223,18 @@ export const siteContents: Record<Locale, SiteContent> = {
       languageLabel: "Language"
     },
     hero: {
-      eyebrow: "Fresh healthy meals by pre-order",
-      headline: "Healthy meals from a small home kitchen",
+      eyebrow: "BẾP NHÀ MÌNH · HEALTHY FOOD HCMC",
+      headline: "Bếp Nhà Mình",
       supportingText:
-        "Healthy food in Ho Chi Minh City, prepared fresh by pre-order for lunch, dinner, and busy weekdays.",
-      primaryCta: "Follow the journey",
+        "The kitchen prepares each made-to-order meal with vegetables, protein, and carbs for a simple, balanced meal.",
+      primaryCta: "View planned menu",
       secondaryCta: "Get launch updates",
       image:
         "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=1200&q=85",
-      alt: "Healthy rice bowl with vegetables, eggs, and fresh ingredients",
+      alt: "Illustrative healthy meal image",
       floatingLabel: "Cooked fresh daily",
-      preorderCardTitle: "Simple pre-order",
-      preorderCardText: "No cart, no online payment."
+      preorderCardTitle: "The kitchen is preparing to launch",
+      preorderCardText: "Leave your details for the launch date and latest catalog."
     },
     sectionHeadings: {
       values: {
@@ -265,9 +249,9 @@ export const siteContents: Record<Locale, SiteContent> = {
       },
       workflow: {
         eyebrow: "Pre-order workflow",
-        title: "Reserve ahead, cook fresh, keep everything simple.",
+        title: "From viewing dishes to receiving launch news.",
         description:
-          "This explains how the kitchen expects to collect interest, not an online purchase flow."
+          "The kitchen will contact you when ordering begins."
       },
       kitchen: {
         eyebrow: "A day in the kitchen",
@@ -298,12 +282,12 @@ export const siteContents: Record<Locale, SiteContent> = {
     ],
     story: {
       eyebrow: "Kitchen story",
-      title: "Cooked like family food, served with a thoughtful promise.",
+      title: "A small made-to-order kitchen in Ho Chi Minh City.",
       body: [
-        "Bếp Nhà Mình started from the wish to make healthy, approachable meals for busy people in Ho Chi Minh City.",
-        "Instead of selling at scale, the kitchen collects sign-ups first, prepares just enough ingredients, cooks fresh each day, and keeps operations small for healthy rice bowls, salads, and meal prep."
+        "Bếp Nhà Mình is a small kitchen in Ho Chi Minh City that prepares meals to order to keep them fresh.",
+        "Planning each batch around expected demand gives the kitchen room to care for every meal and reduce ingredient waste."
       ],
-      note: "The launch menu is still being finalized for selected central areas in Ho Chi Minh City. This website is for brand introduction and waitlist sign-ups."
+      note: "The menu is being updated in batches before launch."
     },
     dishes: [
       {
@@ -342,28 +326,18 @@ export const siteContents: Record<Locale, SiteContent> = {
     workflow: [
       {
         step: "01",
-        title: "View menu",
-        description: "The planned menu is shared by launch batch."
+        title: "View planned dishes",
+        description: "Browse the catalog the kitchen is refining."
       },
       {
         step: "02",
-        title: "Message or sign up",
-        description: "Leave your details so the kitchen can send early updates."
+        title: "Sign up for launch news",
+        description: "Leave your phone number for the latest catalog."
       },
       {
         step: "03",
-        title: "Kitchen confirms",
-        description: "The kitchen confirms quantity, area, and timing."
-      },
-      {
-        step: "04",
-        title: "Prep and cook fresh",
-        description: "Ingredients are prepared based on confirmed demand."
-      },
-      {
-        step: "05",
-        title: "Deliver meals",
-        description: "Meals are packed neatly and delivered within the agreed window."
+        title: "The kitchen contacts you",
+        description: "We will confirm the launch date and HCMC delivery windows."
       }
     ],
     kitchen: [
@@ -391,18 +365,18 @@ export const siteContents: Record<Locale, SiteContent> = {
     ],
     waitlist: {
       eyebrow: "Waitlist",
-      title: "Get notified when Bếp Nhà Mình opens",
+      title: "Get notified when the kitchen opens",
       description:
-        "Leave your area and preferred meal type. The kitchen only uses this information for healthy food and meal prep launch updates in Ho Chi Minh City.",
+        "Leave your phone number for the launch date and latest catalog.",
       successMessage:
         "Your details have been received. Bếp Nhà Mình will send an early update when the menu opens.",
       note:
-        "This form is only for launch updates. It does not create an order and does not process payment.",
+        "A phone number is the quickest way to send launch news. Email is optional.",
       form: {
         name: "Name",
         district: "Area/district",
         phone: "Phone",
-        email: "Email",
+        email: "Email (optional)",
         preferredMeal: "Preferred meal",
         submit: "Get launch updates",
         loading: "Checking...",
@@ -413,14 +387,14 @@ export const siteContents: Record<Locale, SiteContent> = {
       }
     },
     social: {
-      title: "Follow the kitchen journey",
+      title: "Contact Bếp Nhà Mình",
       description:
-        "Test menus, prep photos, planned delivery areas, and healthy food launch dates will be shared on social channels.",
+        "Hotline 091 544 2787 · Ho Chi Minh City · Order hours 08:30–16:30.",
       links: socialLinks
     },
     footer: {
       description:
-        "Brand introduction and waitlist website. Address, opening hours, and official contact information will be updated when the kitchen is ready."
+        "Bếp Nhà Mình · Healthy food made fresh to order. Ho Chi Minh City · Hotline 091 544 2787 · Order hours 08:30–16:30."
     }
   }
 };

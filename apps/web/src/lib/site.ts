@@ -6,7 +6,7 @@ export const brandShortName = "Bếp Nhà Mình";
 export const hotline = "0915442787";
 export const formattedHotline = "091 544 2787";
 export const businessEmail =
-  process.env.NEXT_PUBLIC_CONTACT_EMAIL || "hello@bepnhaminh.vn";
+  process.env.NEXT_PUBLIC_CONTACT_EMAIL || undefined;
 export const businessLocale = "vi_VN";
 export const businessCountry = "VN";
 export const businessRegion = "Ho Chi Minh City";
@@ -19,11 +19,7 @@ export const businessCuisine = [
   "Pre-order meals"
 ];
 export const businessAreaServed = [
-  "TP. Hồ Chí Minh",
-  "Quận 1",
-  "Quận 3",
-  "Bình Thạnh",
-  "Phú Nhuận"
+  "TP. Hồ Chí Minh"
 ];
 export const logoPath = "/brand-logo.jpg";
 export const ogImagePath = "/og-image.svg";
@@ -31,8 +27,8 @@ export const socialProfileUrls = [
   process.env.NEXT_PUBLIC_INSTAGRAM_URL || "https://instagram.com/bepnhaminh.sg/",
   process.env.NEXT_PUBLIC_FACEBOOK_URL ||
     "https://facebook.com/profile.php?id=61591894748199",
-  process.env.NEXT_PUBLIC_TIKTOK_URL || "https://tiktok.com/"
-];
+  process.env.NEXT_PUBLIC_TIKTOK_URL || ""
+].filter((url) => url && !/^https?:\/\/(www\.)?tiktok\.com\/?$/.test(url));
 
 export const seoKeywords = {
   vi: [

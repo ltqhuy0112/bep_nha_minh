@@ -12,7 +12,7 @@ export function SocialSection({ social }: SocialSectionProps) {
   return (
     <section id="contact" className="botanical-section botanical-soft py-16 md:py-24">
       <Container>
-        <MotionReveal className="rounded-[28px] border border-olive-700/10 bg-white p-7 shadow-soft md:p-10">
+        <MotionReveal className="border-y border-olive-700/10 py-8 md:py-10">
           <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-center">
             <SectionHeading title={social.title} description={social.description} />
             <div className="flex flex-wrap gap-3">

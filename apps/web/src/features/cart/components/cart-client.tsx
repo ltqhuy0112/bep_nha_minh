@@ -23,11 +23,11 @@ export function CartClient({ locale }: { locale: CartLocale }) {
 
   useEffect(() => {
     const controller = new AbortController();
-    void getCartSlots(date, controller.signal).then((result) => {
+    void getCartSlots(date, locale, controller.signal).then((result) => {
       if (!controller.signal.aborted) setSlotState({ date, slots: result.items, error: false });
     }).catch(() => { if (!controller.signal.aborted) setSlotState({ date, slots: null, error: true }); });
     return () => controller.abort();
-  }, [date]);
+  }, [date, locale]);
 
   if (state.loading) return <CartState locale={locale} message={text.loading} />;
   if (state.error && !state.cart) return <CartState locale={locale} message={text.error} retry={state.reload} unauthenticated={state.error.status === 401} />;

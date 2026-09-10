@@ -32,11 +32,11 @@ import { FloatingActions } from "@/components/layout/floating-actions";
 import { HeroSection } from "@/components/sections/hero-section";
 import { BrandValues } from "@/components/sections/brand-values";
 import { StorySection } from "@/components/sections/story-section";
-import { DishGrid } from "@/components/sections/dish-grid";
+import { FeaturedCatalog } from "@/components/sections/featured-catalog";
 import { PreorderWorkflow } from "@/components/sections/preorder-workflow";
-import { KitchenGallery } from "@/components/sections/kitchen-gallery";
 import { WaitlistSection } from "@/components/sections/waitlist-section";
 import { SocialSection } from "@/components/sections/social-section";
+import { FaqSection } from "@/components/sections/faq-section";
 
 type LocaleParams = Promise<{ locale: string }>;
 
@@ -261,24 +261,18 @@ export default async function LocalizedHome({
       />
       <Header nav={content.nav} locale={rawLocale} labels={content.header} />
       <main>
-        <HeroSection hero={content.hero} />
+        <HeroSection hero={content.hero} locale={rawLocale} />
         <BrandValues
           heading={content.sectionHeadings.values}
           values={content.values}
         />
         <StorySection story={content.story} />
-        <DishGrid
-          dishes={content.dishes}
-          heading={content.sectionHeadings.dishes}
-        />
+        <FeaturedCatalog locale={rawLocale} />
         <PreorderWorkflow
           workflow={content.workflow}
           heading={content.sectionHeadings.workflow}
         />
-        <KitchenGallery
-          heading={content.sectionHeadings.kitchen}
-          items={content.kitchen}
-        />
+        <FaqSection locale={rawLocale} />
         <WaitlistSection waitlist={content.waitlist} />
         <SocialSection social={content.social} />
       </main>

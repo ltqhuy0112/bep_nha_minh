@@ -26,6 +26,10 @@ COPY tsconfig.json ./
 CMD ["npm", "--workspace", "@bep-nha-minh/api", "run", "typecheck"]
 
 FROM base AS builder
+ARG NEXT_PUBLIC_ORDERING_ENABLED=false
+ARG NEXT_PUBLIC_SITE_URL=http://localhost:3000
+ENV NEXT_PUBLIC_ORDERING_ENABLED=$NEXT_PUBLIC_ORDERING_ENABLED
+ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build

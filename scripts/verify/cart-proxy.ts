@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { NextRequest } from "next/server";
-import { GET, POST } from "../../apps/web/src/app/api/cart/route";
+let GET: typeof import("../../apps/web/src/app/api/cart/route").GET;
+let POST: typeof import("../../apps/web/src/app/api/cart/route").POST;
 import { safeReturnTo } from "../../apps/web/src/features/customer-auth/routes";
 
 const originalFetch = globalThis.fetch;
@@ -29,6 +30,8 @@ function request(method: "GET" | "POST", expected: number, options: RequestOptio
 }
 
 async function main() {
+  process.env.NEXT_PUBLIC_ORDERING_ENABLED = "true";
+  ({ GET, POST } = await import("../../apps/web/src/app/api/cart/route"));
   assert.equal(safeReturnTo("/vi/cart", "vi"), "/vi/cart");
   assert.equal(safeReturnTo("/en/cart", "vi"), "/vi/account");
   assert.equal(safeReturnTo("//evil", "vi"), "/vi/account");

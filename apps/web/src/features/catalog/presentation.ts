@@ -5,7 +5,7 @@ type ProductPresentation = { image: string; alt: Record<CatalogLocale, string> }
 
 const productPresentation: Record<string, ProductPresentation> = {
   "grilled-chicken-rice": {
-    image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=85",
+    image: logoPath,
     alt: { vi: "Phần ăn healthy với rau xanh và protein", en: "Healthy meal with greens and protein" }
   },
   "beef-vegetable-rice": {
