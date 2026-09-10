@@ -2,9 +2,54 @@
 
 Lightweight brand bio website for **Bếp Nhà Mình**, backed by PostgreSQL for waitlist leads, site content, demo admin users, customers, orders, order history, audit logs, and admin analytics.
 
-This is not a public e-commerce system. It has no public cart, checkout, payment, inventory, customer accounts, accounting, payroll, delivery-driver app, or payment reconciliation.
+The commerce track currently adds a read-only VI/EN catalog and product availability. Public cart, checkout, payment collection and customer login are not enabled. Commerce database tables are foundations, not evidence that those flows are live.
+
+See the [commerce roadmap and approved decisions](docs/phases/ecommerce/README.md) before continuing a commerce phase.
 
 Current public features include Vietnamese/English pages, waitlist signup, SEO metadata, structured data, sitemap/robots, OpenAPI documentation, botanical brand styling, fixed hotline contact, and scroll-to-top controls.
+
+## Commerce Catalog (Phase 3.1)
+
+For local development, with PostgreSQL running and `.env` configured:
+
+```powershell
+npm run db:up
+npm run db:seed:catalog
+npm run api:dev
+```
+
+In a second terminal:
+
+```powershell
+npm run dev
+```
+
+If Docker already occupies port 3000, start local web on another port:
+
+```powershell
+npm --workspace @bep-nha-minh/web run dev -- --port 3002
+```
+
+Open `/vi/menu` or `/en/menu` on the web port printed by Next.js. The web server proxies catalog requests to the server-only `COMMERCE_API_URL` (default `http://127.0.0.1:3001`). API health and OpenAPI are at `/api/v1/health/ready` and `/api/v1/openapi.json` on port 3001. Do not expose this setting through `NEXT_PUBLIC_`.
+
+`db:seed:catalog` is local-development-only and inserts four bilingual demo products without overwriting existing records. Demo prices are not approved production prices; products do not accept orders. It creates no fulfillment slots, stock, orders or accounts.
+
+The four delivery slots are approved in [the business decisions](docs/phases/ecommerce/phase_1_review_decisions.md): LUNCH_1 10:30-12:00, LUNCH_2 12:00-13:30, DINNER_1 17:00-18:30, DINNER_2 18:30-20:00, all in Asia/Ho_Chi_Minh with a 120-minute cutoff. Apply this explicit configuration after migrations:
+
+```powershell
+npm run db:configure:slots
+```
+
+The command requires `DATABASE_URL`, is transactional and repeatable, preserves disabled/existing slots, and rejects conflicting hours for an existing key. It does not create inventory or enable product sales/checkout. It is not automatically run by Docker startup. For Docker, build the updated API image with `npm run docker:build:api`, then run `docker compose run --rm api npm run db:configure:slots` after migrations and checking the target database.
+
+Docker mode starts an internal `commerce-api` service automatically; web reaches it at `http://commerce-api:3001`. The API port is not published to the host. Catalog demo seeding is not part of Docker production startup. Existing `db:seed` remains separate from the catalog seed.
+
+```powershell
+npm run verify:catalog
+npm run verify:catalog:proxy
+```
+
+The verifier creates/drops its own random PostgreSQL database; the database user needs CREATE DATABASE permission. It never resets the application database. See [Phase 3.1](docs/phases/ecommerce/phase_3_1_catalog.md) for scope and verification results.
 
 ## Prerequisites
 
@@ -70,6 +115,7 @@ Expected services:
 
 ```text
 postgres  healthy
+commerce-api healthy
 migrate   exited 0
 seed      exited 0
 web       healthy
@@ -96,6 +142,7 @@ migrate    one-off API/tools image job that runs migrations
 seed       one-off API/tools image job that seeds demo data
 web        production Next.js standalone image
 api        tools-profile backend image for backend checks and future API runtime
+commerce-api internal catalog HTTP runtime, using the API image
 ```
 
 ## Mode 2: Full Local

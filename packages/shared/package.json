@@ -11,6 +11,7 @@
     "./schemas/waitlist": "./src/schemas/waitlist.ts",
     "./types/admin": "./src/types/admin.ts",
     "./types/api-response": "./src/types/api-response.ts",
+    "./types/catalog": "./src/types/catalog.ts",
     "./types/site": "./src/types/site.ts",
     "./utils/phone": "./src/utils/phone.ts"
   },
