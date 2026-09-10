@@ -7,9 +7,9 @@ import {
   seededAdminId,
   seededManagerId,
   type SeedOrderStatus
-} from "../../src/data/admin-seed-data";
-import { siteContent } from "../../src/data/site-content";
-import { hashAdminPassword } from "../../src/lib/admin/password";
+} from "@bep-nha-minh/api/data/admin-seed-data";
+import { siteContent } from "@bep-nha-minh/api/data/site-content";
+import { hashAdminPassword } from "@bep-nha-minh/api/lib/admin/password";
 
 const { Pool } = pg;
 

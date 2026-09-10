@@ -12,9 +12,15 @@ const cliPath = resolve(
   "../../node_modules/node-pg-migrate/bin/node-pg-migrate.js"
 );
 const args = process.argv.slice(2);
+const command = args[0];
 const normalizedArgs = args.includes("create")
   ? args
-  : [...args, "--migration-filename-format", "utc", "--no-check-order"];
+  : [
+      ...args,
+      "--migration-filename-format",
+      "utc",
+      ...(command === "up" ? ["--no-check-order"] : [])
+    ];
 
 const result = spawnSync(process.execPath, [cliPath, ...normalizedArgs], {
   stdio: "inherit",

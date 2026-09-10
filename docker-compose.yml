@@ -1,3 +1,28 @@
+x-app-env: &app-env
+  DATABASE_URL: postgresql://${POSTGRES_USER:-bep_user}:${POSTGRES_PASSWORD:-bep_password}@postgres:5432/${POSTGRES_DB:-bep_nha_minh}
+  NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+  BUSINESS_TIMEZONE: ${BUSINESS_TIMEZONE:-Asia/Ho_Chi_Minh}
+  AUTH_SECRET: ${AUTH_SECRET:-dev-only-change-this-admin-auth-secret}
+  NEXT_PUBLIC_INSTAGRAM_URL: ${NEXT_PUBLIC_INSTAGRAM_URL:-}
+  NEXT_PUBLIC_FACEBOOK_URL: ${NEXT_PUBLIC_FACEBOOK_URL:-}
+  NEXT_PUBLIC_TIKTOK_URL: ${NEXT_PUBLIC_TIKTOK_URL:-}
+
+x-api-job: &api-job
+  image: bep-nha-minh-api:${APP_IMAGE_TAG:-local}
+  build:
+    context: .
+    dockerfile: Dockerfile
+    target: api
+  working_dir: /app
+  depends_on:
+    postgres:
+      condition: service_healthy
+  environment:
+    <<: *app-env
+  networks:
+    - bep-network
+  restart: "no"
+
 services:
   postgres:
     image: postgres:16-alpine
@@ -25,51 +50,33 @@ services:
       - bep-network
 
   migrate:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: tools
+    <<: *api-job
     container_name: bep-nha-minh-migrate
-    working_dir: /app
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER:-bep_user}:${POSTGRES_PASSWORD:-bep_password}@postgres:5432/${POSTGRES_DB:-bep_nha_minh}
     command: npm run db:up
-    networks:
-      - bep-network
-    restart: "no"
 
   seed:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: tools
+    <<: *api-job
     container_name: bep-nha-minh-seed
-    working_dir: /app
     depends_on:
       postgres:
         condition: service_healthy
       migrate:
         condition: service_completed_successfully
-    environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER:-bep_user}:${POSTGRES_PASSWORD:-bep_password}@postgres:5432/${POSTGRES_DB:-bep_nha_minh}
-      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
-      BUSINESS_TIMEZONE: ${BUSINESS_TIMEZONE:-Asia/Ho_Chi_Minh}
-      AUTH_SECRET: ${AUTH_SECRET:-dev-only-change-this-admin-auth-secret}
-      NEXT_PUBLIC_INSTAGRAM_URL: ${NEXT_PUBLIC_INSTAGRAM_URL:-}
-      NEXT_PUBLIC_FACEBOOK_URL: ${NEXT_PUBLIC_FACEBOOK_URL:-}
-      NEXT_PUBLIC_TIKTOK_URL: ${NEXT_PUBLIC_TIKTOK_URL:-}
     command: npm run db:seed
-    networks:
-      - bep-network
-    restart: "no"
+
+  api:
+    <<: *api-job
+    container_name: bep-nha-minh-api-tools
+    command: npm --workspace @bep-nha-minh/api run typecheck
+    profiles:
+      - tools
 
   web:
+    image: bep-nha-minh-web:${APP_IMAGE_TAG:-local}
     build:
       context: .
       dockerfile: Dockerfile
+      target: web
     container_name: bep-nha-minh-web
     restart: unless-stopped
     depends_on:
@@ -83,13 +90,7 @@ services:
       NODE_ENV: production
       PORT: 3000
       HOSTNAME: 0.0.0.0
-      DATABASE_URL: postgresql://${POSTGRES_USER:-bep_user}:${POSTGRES_PASSWORD:-bep_password}@postgres:5432/${POSTGRES_DB:-bep_nha_minh}
-      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
-      BUSINESS_TIMEZONE: ${BUSINESS_TIMEZONE:-Asia/Ho_Chi_Minh}
-      AUTH_SECRET: ${AUTH_SECRET:-dev-only-change-this-admin-auth-secret}
-      NEXT_PUBLIC_INSTAGRAM_URL: ${NEXT_PUBLIC_INSTAGRAM_URL:-}
-      NEXT_PUBLIC_FACEBOOK_URL: ${NEXT_PUBLIC_FACEBOOK_URL:-}
-      NEXT_PUBLIC_TIKTOK_URL: ${NEXT_PUBLIC_TIKTOK_URL:-}
+      <<: *app-env
     ports:
       - "3000:3000"
     healthcheck:
