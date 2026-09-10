@@ -5,6 +5,9 @@ import pg from "pg";
 import { createApiServer } from "./http-server";
 import { readCustomerAuthConfig } from "../features/customer-auth/config";
 import { createCustomerAuthHandler } from "../features/customer-auth/http";
+import { createCustomerAddressHandler } from "../features/customer-addresses/http";
+import { createLocationHandler } from "../features/locations/http";
+import { createCartHandler } from "../features/cart/http";
 
 const rootDirectory = resolve(fileURLToPath(new URL("../../../../", import.meta.url)));
 config({ path: resolve(rootDirectory, ".env"), override: false, quiet: true });
@@ -31,6 +34,9 @@ const server = createApiServer({
   },
   catalogDatabase: pool,
   customerAuthHandler: createCustomerAuthHandler(pool, readCustomerAuthConfig(process.env)),
+  customerAddressHandler: createCustomerAddressHandler(pool, readCustomerAuthConfig(process.env)),
+  locationHandler: createLocationHandler(pool),
+  cartHandler: createCartHandler(pool, readCustomerAuthConfig(process.env)),
   readinessTimeoutMs
 });
 const port = readPort(process.env.API_PORT);

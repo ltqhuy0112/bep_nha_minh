@@ -166,6 +166,13 @@ export class CustomerAuthService {
     return { token, session: sessionDto({ ...account, expires_at: result.rows[0].expires_at }) };
   }
 
+  async withSession<T>(token: string | null, operation: (client: PoolClient, owner: { accountId: string; customerId: string }) => Promise<T>) {
+    return this.transaction(async (client) => {
+      const account = await this.lockSessionAccount(client, token);
+      return operation(client, { accountId: account.id, customerId: account.customer_id });
+    });
+  }
+
   private async lockSessionAccount(client: PoolClient, rawToken: string | null) {
     if (!rawToken) throw unauthenticated();
     const initial = await client.query<{ account_id: string }>("SELECT account_id FROM customer_sessions WHERE token_hash=$1", [tokenHash(rawToken)]);

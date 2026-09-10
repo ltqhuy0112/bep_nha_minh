@@ -9,9 +9,13 @@
     "./constants/i18n": "./src/constants/i18n.ts",
     "./constants/order-status": "./src/constants/order-status.ts",
     "./schemas/waitlist": "./src/schemas/waitlist.ts",
+    "./schemas/customer-address": "./src/schemas/customer-address.ts",
+    "./schemas/cart": "./src/schemas/cart.ts",
+    "./types/cart": "./src/types/cart.ts",
     "./types/admin": "./src/types/admin.ts",
     "./types/api-response": "./src/types/api-response.ts",
     "./types/catalog": "./src/types/catalog.ts",
+    "./types/locations": "./src/types/locations.ts",
     "./types/site": "./src/types/site.ts",
     "./utils/phone": "./src/utils/phone.ts"
   },

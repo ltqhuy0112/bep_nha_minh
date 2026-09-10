@@ -30,7 +30,8 @@ Provider callback URLs, OAuth transactions, BFF redirect allowlists and the API'
 fixed `/account` callback destination are unchanged. The account client forwards
 OAuth errors to login and successful callbacks to an optional local return hint.
 
-`next` accepts only literal same-locale `/account`, `/menu`, or `/checkout` paths.
+`next` accepts only literal same-locale `/account`, `/account/addresses` (Phase 3.4),
+`/menu`, or `/checkout` paths.
 No arbitrary URL, query, hash, cross-locale path or encoded alternate is accepted.
 `/checkout` is a reserved return contract for the future checkout feature, not a
 checkout implementation or current entry point. The default is `/account`.

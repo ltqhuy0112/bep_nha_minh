@@ -5,10 +5,16 @@ import { handleCatalogRequest } from "../features/catalog/http";
 import type { CatalogDatabase } from "../features/catalog/database";
 import { getLiveHealth, isReady, type HealthDependencies } from "./health";
 import type { createCustomerAuthHandler } from "../features/customer-auth/http";
+import type { createCustomerAddressHandler } from "../features/customer-addresses/http";
+import type { createLocationHandler } from "../features/locations/http";
+import type { createCartHandler } from "../features/cart/http";
 
 export type ApiServerOptions = HealthDependencies & {
   catalogDatabase?: CatalogDatabase;
   customerAuthHandler?: ReturnType<typeof createCustomerAuthHandler>;
+  customerAddressHandler?: ReturnType<typeof createCustomerAddressHandler>;
+  locationHandler?: ReturnType<typeof createLocationHandler>;
+  cartHandler?: ReturnType<typeof createCartHandler>;
 };
 
 export function createApiServer(options: ApiServerOptions = {}): Server {
@@ -36,6 +42,9 @@ async function handleRequest(
   const path = url.pathname;
 
   if (options.customerAuthHandler && await options.customerAuthHandler(request, response, url)) return;
+  if (options.customerAddressHandler && await options.customerAddressHandler(request, response, url)) return;
+  if (options.locationHandler && await options.locationHandler(request, response, url)) return;
+  if (options.cartHandler && await options.cartHandler(request, response, url)) return;
 
   if (path === "/api/v1/health/live") {
     if (request.method !== "GET") {

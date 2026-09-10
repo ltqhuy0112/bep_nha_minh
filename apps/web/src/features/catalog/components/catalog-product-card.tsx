@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { AddToCartButton } from "@/features/cart/components/add-to-cart-button";
 import { copyFor } from "../copy";
 import { formatPrice, getProductPresentation } from "../presentation";
 import type { CatalogLocale, CatalogProduct } from "../types";
@@ -23,6 +24,7 @@ export function CatalogProductCard({ product, locale, eager = false }: { product
         <Link href={`/${locale}/menu/${encodeURIComponent(product.slug)}`} className="mt-auto pt-5 text-sm font-bold text-olive-900 underline decoration-olive-500/50 underline-offset-4 hover:decoration-olive-900">
           {copy.viewDetails}
         </Link>
+        <div className="mt-4"><AddToCartButton slug={product.slug} locale={locale} disabled={!product.acceptingOrders || product.fulfillmentBlocked} /></div>
       </div>
     </article>
   );

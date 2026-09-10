@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { ShoppingBag } from "lucide-react";
 import { usePathname } from "next/navigation";
 import type { NavItem } from "@bep-nha-minh/shared/types/site";
 import {
@@ -102,6 +104,9 @@ export function Header({ nav, locale, labels }: HeaderProps) {
           ))}
         </nav>
 
+        <Link href={`/${locale}/cart`} aria-label={locale === "vi" ? "Giỏ hàng" : "Shopping cart"} title={locale === "vi" ? "Giỏ hàng" : "Shopping cart"} className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg text-olive-900 hover:bg-olive-700/10">
+          <ShoppingBag size={22} aria-hidden="true" />
+        </Link>
         <button
           type="button"
           className="inline-flex size-11 items-center justify-center rounded-full border border-olive-700/20 text-olive-900 md:hidden"
