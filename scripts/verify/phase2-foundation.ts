@@ -1,6 +1,7 @@
 import "dotenv/config";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
+import { readdirSync } from "node:fs";
 import path from "node:path";
 import pg from "pg";
 import { runner } from "node-pg-migrate";
@@ -43,6 +44,10 @@ const requiredColumns: Record<string, string[]> = {
 };
 
 async function migrate(direction: "up" | "down", count?: number, legacyOnly = false) {
+  // This verifier exercises the historical Phase 2 boundary, not later phase rollbacks.
+  const boundary = legacyOnly ? "20260723001200000" : "20260910000400000";
+  const later = readdirSync(path.resolve("migrations")).map((file) => /^(\d+)_/.exec(file)?.[1])
+    .filter((timestamp): timestamp is string => Boolean(timestamp && timestamp > boundary));
   return runner({
     databaseUrl: testUrl.toString(),
     dir: path.resolve("migrations"),
@@ -51,7 +56,7 @@ async function migrate(direction: "up" | "down", count?: number, legacyOnly = fa
     count,
     checkOrder: false,
     singleTransaction: true,
-    ignorePattern: legacyOnly ? "20260910.*" : undefined,
+    ignorePattern: later.length ? `(?:${later.join("|")})_.*` : undefined,
     logger: { info() {}, warn() {}, error() {} }
   });
 }

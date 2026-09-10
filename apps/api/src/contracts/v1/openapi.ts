@@ -1,4 +1,5 @@
 import { API_VERSION } from "./envelope";
+import { customerAuthOpenApiPaths } from "../../features/customer-auth/openapi";
 
 function buildOpenApiDocument() {
   return {
@@ -6,9 +7,10 @@ function buildOpenApiDocument() {
   info: {
     title: "Bep Nha Minh API",
     version: API_VERSION,
-    description: "Standalone API foundation and public catalog endpoints."
+    description: "Standalone API, public catalog and gated customer authentication."
   },
   paths: {
+    ...customerAuthOpenApiPaths,
     "/api/v1/catalog/products": {
       get: {
         summary: "List visible catalog products",

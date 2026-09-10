@@ -4,9 +4,11 @@ import { foundationOpenApiDocument } from "../contracts/v1/openapi";
 import { handleCatalogRequest } from "../features/catalog/http";
 import type { CatalogDatabase } from "../features/catalog/database";
 import { getLiveHealth, isReady, type HealthDependencies } from "./health";
+import type { createCustomerAuthHandler } from "../features/customer-auth/http";
 
 export type ApiServerOptions = HealthDependencies & {
   catalogDatabase?: CatalogDatabase;
+  customerAuthHandler?: ReturnType<typeof createCustomerAuthHandler>;
 };
 
 export function createApiServer(options: ApiServerOptions = {}): Server {
@@ -32,6 +34,8 @@ async function handleRequest(
     return;
   }
   const path = url.pathname;
+
+  if (options.customerAuthHandler && await options.customerAuthHandler(request, response, url)) return;
 
   if (path === "/api/v1/health/live") {
     if (request.method !== "GET") {

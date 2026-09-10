@@ -2,6 +2,10 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  logging: {
+    // OAuth callback URLs contain single-use state/code; never print them in dev request logs.
+    incomingRequests: { ignore: [/^\/api\/customer-auth(?:\/|\?|$)/] }
+  },
   transpilePackages: ["@bep-nha-minh/shared", "@bep-nha-minh/api"],
   async headers() {
     return [

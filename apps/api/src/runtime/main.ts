@@ -3,6 +3,8 @@ import { resolve } from "node:path";
 import { config } from "dotenv";
 import pg from "pg";
 import { createApiServer } from "./http-server";
+import { readCustomerAuthConfig } from "../features/customer-auth/config";
+import { createCustomerAuthHandler } from "../features/customer-auth/http";
 
 const rootDirectory = resolve(fileURLToPath(new URL("../../../../", import.meta.url)));
 config({ path: resolve(rootDirectory, ".env"), override: false, quiet: true });
@@ -28,10 +30,13 @@ const server = createApiServer({
     query: (statement) => pool.query(statement)
   },
   catalogDatabase: pool,
+  customerAuthHandler: createCustomerAuthHandler(pool, readCustomerAuthConfig(process.env)),
   readinessTimeoutMs
 });
 const port = readPort(process.env.API_PORT);
 const host = process.env.API_HOST ?? "127.0.0.1";
+server.requestTimeout = 10_000;
+server.headersTimeout = 10_000;
 
 let stopping = false;
 
