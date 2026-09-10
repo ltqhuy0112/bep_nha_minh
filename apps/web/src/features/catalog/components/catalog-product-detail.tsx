@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useSyncExternalStore } from "react";
 import { Container } from "@/components/layout/container";
+import { AddToCartButton } from "@/features/cart/components/add-to-cart-button";
 import { copyFor } from "../copy";
 import { useAvailability, useCatalogProduct, useFulfillmentSlots } from "../hooks/use-catalog";
 import { formatPrice, getProductPresentation } from "../presentation";
@@ -41,6 +42,8 @@ export function CatalogProductDetail({ locale, slug }: { locale: CatalogLocale; 
             <h1 className="mt-3 font-serif text-4xl leading-tight text-olive-900 md:text-5xl">{product.name}</h1>
             <p className="mt-5 text-sm font-bold text-wood-500">{copy.price}: {formatPrice(product.unitPrice, product.currency, locale)}</p>
             {product.description ? <p className="mt-5 text-base leading-7 text-muted">{product.description}</p> : null}
+            <div className="mt-6"><AddToCartButton slug={product.slug} locale={locale} disabled={!product.acceptingOrders || product.fulfillmentBlocked} /></div>
+            <Link href={`/${locale}/cart`} className="mt-4 inline-block text-sm font-semibold underline">{locale === "vi" ? "Xem giỏ hàng" : "View cart"}</Link>
           </section>
         </div>
 

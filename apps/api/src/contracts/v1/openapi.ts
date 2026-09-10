@@ -1,5 +1,8 @@
 import { API_VERSION } from "./envelope";
 import { customerAuthOpenApiPaths } from "../../features/customer-auth/openapi";
+import { customerAddressOpenApiPaths } from "../../features/customer-addresses/openapi";
+import { locationOpenApiPaths } from "../../features/locations/openapi";
+import { cartOpenApiPaths } from "../../features/cart/openapi";
 
 function buildOpenApiDocument() {
   return {
@@ -11,6 +14,9 @@ function buildOpenApiDocument() {
   },
   paths: {
     ...customerAuthOpenApiPaths,
+    ...customerAddressOpenApiPaths,
+    ...locationOpenApiPaths,
+    ...cartOpenApiPaths,
     "/api/v1/catalog/products": {
       get: {
         summary: "List visible catalog products",

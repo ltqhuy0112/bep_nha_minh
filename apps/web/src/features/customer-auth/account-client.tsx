@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Container } from "@/components/layout/container";
 import { Notice, SessionView } from "./components";
 import { authPath, consumeOAuthReturn, isAuthMode } from "./routes";
@@ -53,6 +54,7 @@ function AccountSession({ locale }: { locale: Locale }) {
     {!auth.ready && !auth.error ? <p role="status">{auth.text.loading}</p> : null}
     {auth.config && !auth.config.enabled ? <Notice message={auth.text.unavailable} /> : null}
     {auth.config?.enabled && auth.session ? <SessionView session={auth.session} locale={locale} text={auth.text} busy={auth.busy} onResend={auth.resend} onLogout={auth.logout} onLogoutAll={auth.logoutAll} /> : null}
+    {auth.config?.enabled && auth.session ? <Link href={`/${locale}/account/addresses`} className="mt-5 inline-flex min-h-11 items-center text-sm font-semibold underline underline-offset-4">{locale === "vi" ? "Địa chỉ giao hàng" : "Delivery addresses"}</Link> : null}
     {auth.message ? <p className="mt-5 text-sm" role="status">{auth.message}</p> : null}
     {auth.error ? <p className="mt-5 text-sm text-red-800" role="alert">{auth.error}</p> : null}
     {auth.ready && !auth.config ? <button type="button" onClick={auth.retryLoad} className="mt-4 min-h-11 rounded-md border border-olive-700/20 px-4 text-sm font-semibold">{locale === "vi" ? "Thử lại" : "Try again"}</button> : null}

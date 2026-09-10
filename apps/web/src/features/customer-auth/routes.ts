@@ -6,7 +6,7 @@ export function isAuthMode(value: unknown): value is AuthMode {
 
 export function safeReturnTo(value: unknown, locale: Locale): string {
   // Only literal, same-locale destinations; never accept arbitrary URLs or query strings.
-  return typeof value === "string" && [`/${locale}/account`, `/${locale}/menu`, `/${locale}/checkout`].includes(value)
+  return typeof value === "string" && [`/${locale}/account`, `/${locale}/account/addresses`, `/${locale}/menu`, `/${locale}/cart`, `/${locale}/checkout`].includes(value)
     ? value : `/${locale}/account`;
 }
 

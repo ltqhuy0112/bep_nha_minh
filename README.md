@@ -2,13 +2,19 @@
 
 Lightweight brand bio website for **Bếp Nhà Mình**, backed by PostgreSQL for waitlist leads, site content, demo admin users, customers, orders, order history, audit logs, and admin analytics.
 
-The commerce track currently adds a read-only VI/EN catalog and product availability. Public cart, checkout, payment collection and customer login are not enabled. Commerce database tables are foundations, not evidence that those flows are live.
+The commerce track includes a VI/EN catalog, product availability, gated customer authentication and guest/account carts at `/vi/cart` or `/en/cart`. Checkout and payment collection remain disabled. Products with `accepting_orders=false` cannot be added to a cart; cart support does not automatically enable sales.
 
 See the [commerce roadmap and approved decisions](docs/phases/ecommerce/README.md) before continuing a commerce phase.
+
+For Phase 3.5, `npm run verify:cart` runs only isolated cart API and BFF checks, not email/OAuth/admin regressions. See the [cart implementation and remaining gates](docs/phases/ecommerce/phase_3_5_cart.md).
+
+To seed the four healthy demo meals and enable adding them to carts locally, run `npm run db:seed:catalog -- --for-cart`. This preserves existing prices/translations, skips archived or fulfillment-blocked products, and does not create inventory/orders or enable checkout. Without the flag, newly seeded products remain disabled.
 
 Customer authentication starts at `/vi/auth/login` or `/en/auth/login`; profiles live at `/{locale}/account`. Auth is disabled by default in the example configuration. Development acceptance is complete for local login, Google OAuth and Resend; Facebook is deferred/disabled and production remains gated. See [Phase 3.2](docs/phases/ecommerce/phase_3_2_customer_auth.md) for configuration and [Phase 3.3](docs/phases/ecommerce/phase_3_3_auth_navigation.md) for UI routes. Admin authentication is unchanged.
 
 Registration and password-reset emails are queued, not sent by the web/API process. In an explicitly configured development environment, run `npm run email:dispatch:auth -- --watch` in a separate terminal. This command sends real email. Duplicate registration does not replace an existing password; Google-only accounts cannot reset a local password they do not have.
+
+Signed-in customers can manage delivery addresses at `/vi/account/addresses` or `/en/account/addresses`. New addresses use the two-level province/ward model, without district. Run `npm run db:up` then `npm run locations:sync` before using the updated form. Location data is bundled and imported into PostgreSQL offline; see the [location data runbook](docs/operations/location-data.md) and [Phase 3.4](docs/phases/ecommerce/phase_3_4_customer_addresses.md). Restart the standalone API if it is not running in watch mode. Checkout is not yet enabled.
 
 Current public features include Vietnamese/English pages, waitlist signup, SEO metadata, structured data, sitemap/robots, OpenAPI documentation, botanical brand styling, fixed hotline contact, and scroll-to-top controls.
 

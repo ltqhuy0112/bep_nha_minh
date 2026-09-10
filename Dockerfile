@@ -21,6 +21,7 @@ COPY apps/api ./apps/api
 COPY packages ./packages
 COPY migrations ./migrations
 COPY scripts ./scripts
+COPY data/locations ./data/locations
 COPY tsconfig.json ./
 CMD ["npm", "--workspace", "@bep-nha-minh/api", "run", "typecheck"]
 

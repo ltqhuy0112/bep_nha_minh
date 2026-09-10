@@ -110,7 +110,7 @@ function parse<T>(schema: z.ZodType<T>, body: unknown): T {
   return parsed.data;
 }
 
-async function readJson(request: IncomingMessage): Promise<unknown> {
+export async function readJson(request: IncomingMessage): Promise<unknown> {
   if (request.headers["content-type"]?.split(";")[0].trim().toLowerCase() !== "application/json") {
     throw new AuthError(415, "UNSUPPORTED_MEDIA_TYPE", "JSON content type is required.");
   }
@@ -151,7 +151,7 @@ async function readJson(request: IncomingMessage): Promise<unknown> {
   catch { throw new AuthError(400, "VALIDATION_ERROR", "Invalid JSON."); }
 }
 
-function send(response: ServerResponse, status: number, data: unknown) {
+export function send(response: ServerResponse, status: number, data: unknown) {
   response.writeHead(status, { "content-type": "application/json; charset=utf-8", "cache-control": "no-store",
     "referrer-policy": "no-referrer", "x-content-type-options": "nosniff" });
   response.end(JSON.stringify(data));

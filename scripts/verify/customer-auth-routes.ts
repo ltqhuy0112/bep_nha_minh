@@ -6,6 +6,8 @@ for (const locale of ["vi", "en"] as const) {
     assert.equal(safeReturnTo(invalid, locale), `/${locale}/account`);
   }
   assert.equal(safeReturnTo(`/${locale}/checkout`, locale), `/${locale}/checkout`);
+  assert.equal(safeReturnTo(`/${locale}/account/addresses`, locale), `/${locale}/account/addresses`);
+  assert.equal(safeReturnTo(`/${locale}/account/addresses?owner=other`, locale), `/${locale}/account`);
   assert.equal(authPath(locale, "register", `/${locale}/menu`), `/${locale}/auth/register?next=%2F${locale}%2Fmenu`);
   assert.equal(authPath(locale, "login"), `/${locale}/auth/login`);
 }

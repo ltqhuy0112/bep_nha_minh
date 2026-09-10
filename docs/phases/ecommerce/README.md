@@ -14,7 +14,8 @@ conflicts are recorded in section 8 of the approved specification.
 | [3.1](phase_3_1_catalog.md) | Read-only VI/EN catalog, availability and fulfillment configuration | Implemented; checkout remains disabled |
 | [3.2](phase_3_2_customer_auth.md) | Customer authentication, sessions, email verification/reset and Google OAuth; Facebook deferred | PHASE 3.2 COMPLETE / PRODUCTION GATED: development accepted by user; Facebook disabled; production configuration and operational gates remain open |
 | [3.3](phase_3_3_auth_navigation.md) | Dedicated auth screens, account separation and safe return navigation | Implemented; scoped route/email tests, typecheck, lint and desktop/mobile UI checks passed |
-| Remaining Phase 3 | Customer addresses and guest/account cart | Not started; confirm implementation packet before coding |
+| [3.4](phase_3_4_customer_addresses.md) | Customer-owned saved addresses and default selection | Implemented; isolated API/proxy verification recorded in phase report |
+| [3.5](phase_3_5_cart.md) | Guest/account cart | Development complete; current UI accepted by user; production retention/ingress gates remain open |
 | 4 | COD checkout, ownership/claim, reservations, cancellation and admin integration | Not started |
 | 5 | 60-second review, stock reconciliation, validation/alerts, outbox/RabbitMQ and resilience | Not started |
 | 6 | End-to-end/load verification and operational documentation | Not started |
