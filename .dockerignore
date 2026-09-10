@@ -1,4 +1,8 @@
 .git
+.codegraph
+.logs
+test-results
+playwright-report
 .next
 **/.next
 node_modules

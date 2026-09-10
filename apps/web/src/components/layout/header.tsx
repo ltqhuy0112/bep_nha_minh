@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import type { NavItem } from "@bep-nha-minh/shared/types/site";
 import {
-  getPublicLocalePath,
   locales,
   type Locale
 } from "@bep-nha-minh/shared/constants/i18n";
@@ -25,12 +25,21 @@ type HeaderProps = {
 
 export function Header({ nav, locale, labels }: HeaderProps) {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const menuLabel = locale === "vi" ? "Thực đơn" : "Menu";
+  const menuHref = `/${locale}/menu`;
+  const homeHref = `/${locale}`;
+  const waitlistHref = pathname === homeHref ? "#waitlist" : `${homeHref}#waitlist`;
+
+  function localeHref(nextLocale: Locale) {
+    return pathname.replace(/^\/(?:vi|en)(?=\/|$)/, `/${nextLocale}`);
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-olive-700/10 bg-cream-100/92 backdrop-blur">
       <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-5">
         <a
-          href="#home"
+          href={homeHref}
           className="group inline-flex items-center gap-3 rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-olive-700"
           aria-label={labels.brandAriaLabel}
         >
@@ -50,6 +59,12 @@ export function Header({ nav, locale, labels }: HeaderProps) {
         </a>
 
         <nav className="hidden items-center gap-1 md:flex" aria-label={labels.desktopNavAriaLabel}>
+          <a
+            href={menuHref}
+            className="rounded-full px-4 py-2 text-sm font-semibold text-olive-900 transition hover:bg-olive-700/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-olive-700"
+          >
+            {menuLabel}
+          </a>
           {nav.map((item) => (
             <a
               key={item.href}
@@ -62,7 +77,7 @@ export function Header({ nav, locale, labels }: HeaderProps) {
         </nav>
 
         <div className="hidden md:block">
-          <Button href="#waitlist" variant="primary">
+          <Button href={waitlistHref} variant="primary">
             {labels.waitlistCta}
           </Button>
         </div>
@@ -74,7 +89,7 @@ export function Header({ nav, locale, labels }: HeaderProps) {
           {locales.map((item) => (
             <a
               key={item}
-              href={getPublicLocalePath(item)}
+              href={localeHref(item)}
               className={[
                 "rounded-full px-3 py-1.5 text-xs font-bold uppercase transition",
                 item === locale
@@ -109,6 +124,13 @@ export function Header({ nav, locale, labels }: HeaderProps) {
           className="border-t border-olive-700/10 bg-cream-100 px-5 py-4 md:hidden"
         >
           <nav className="mx-auto grid max-w-6xl gap-2" aria-label={labels.mobileNavAriaLabel}>
+            <a
+              href={menuHref}
+              className="rounded-2xl px-4 py-3 text-base font-semibold text-olive-900 hover:bg-olive-700/10"
+              onClick={() => setOpen(false)}
+            >
+              {menuLabel}
+            </a>
             {nav.map((item) => (
               <a
                 key={item.href}
@@ -123,7 +145,7 @@ export function Header({ nav, locale, labels }: HeaderProps) {
               {locales.map((item) => (
                 <a
                   key={item}
-                  href={getPublicLocalePath(item)}
+                  href={localeHref(item)}
                   className={[
                     "rounded-full px-4 py-2 text-sm font-bold uppercase",
                     item === locale

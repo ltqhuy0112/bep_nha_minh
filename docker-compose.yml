@@ -71,6 +71,30 @@ services:
     profiles:
       - tools
 
+  commerce-api:
+    <<: *api-job
+    container_name: bep-nha-minh-commerce-api
+    command: npm run api:start
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      <<: *app-env
+      NODE_ENV: production
+      API_HOST: 0.0.0.0
+      API_PORT: 3001
+    expose:
+      - "3001"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/api/v1/health/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
   web:
     image: bep-nha-minh-web:${APP_IMAGE_TAG:-local}
     build:
@@ -86,10 +110,13 @@ services:
         condition: service_completed_successfully
       seed:
         condition: service_completed_successfully
+      commerce-api:
+        condition: service_healthy
     environment:
       NODE_ENV: production
       PORT: 3000
       HOSTNAME: 0.0.0.0
+      COMMERCE_API_URL: http://commerce-api:3001
       <<: *app-env
     ports:
       - "3000:3000"

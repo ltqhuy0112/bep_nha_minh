@@ -6,12 +6,17 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./contracts/v1/*": "./src/contracts/v1/*.ts",
+    "./runtime/*": "./src/runtime/*.ts",
     "./data/*": "./src/data/*",
     "./db/*": "./src/db/*",
     "./lib/*": "./src/lib/*",
     "./services/*": "./src/services/*"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "dev": "tsx watch src/runtime/main.ts",
+    "start": "tsx src/runtime/main.ts",
+    "verify:phase2": "tsx ../../scripts/verify/phase2-api.ts"
   }
 }
