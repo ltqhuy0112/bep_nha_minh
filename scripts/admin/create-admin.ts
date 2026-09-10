@@ -5,11 +5,11 @@ import {
   adminRoles,
   isAdminRole,
   type AdminRole
-} from "../../src/lib/admin/permissions";
+} from "@bep-nha-minh/api/lib/admin/permissions";
 import {
   hashAdminPassword,
   validateAdminPassword
-} from "../../src/lib/admin/password";
+} from "@bep-nha-minh/api/lib/admin/password";
 
 const { Pool } = pg;
 
@@ -24,7 +24,7 @@ const usage = `
 Create an admin user for Bếp Nhà Mình.
 
 Usage:
-  npm run admin:create -- --email=admin@example.com --name="Admin Name" [--role=SUPER_ADMIN]
+  npm run admin:create -- --email=adam.le@gmail.com --name="Adam Le" [--role=SUPER_ADMIN]
 
 Options:
   --email=<email>          Required admin email.

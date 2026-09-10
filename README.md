@@ -78,12 +78,25 @@ web       healthy
 Useful Docker commands:
 
 ```powershell
+npm run docker:build:api
+npm run docker:build:web
+npm run docker:api:check
 npm run docker:logs
 npm run docker:down
 npm run docker:reset
 ```
 
 `docker:reset` removes the PostgreSQL volume, rebuilds, reruns migrations, and reseeds demo data.
+
+Docker lifecycle:
+
+```text
+postgres   PostgreSQL 16 with health check
+migrate    one-off API/tools image job that runs migrations
+seed       one-off API/tools image job that seeds demo data
+web        production Next.js standalone image
+api        tools-profile backend image for backend checks and future API runtime
+```
 
 ## Mode 2: Full Local
 
@@ -118,7 +131,7 @@ npm run build
 npm run start
 ```
 
-`next.config.ts` uses `output: "standalone"`, so production start is `node .next/standalone/server.js`. Do not use `next start` unless standalone output is removed.
+The web workspace uses `output: "standalone"`, so production start runs `apps/web/.next/standalone/apps/web/server.js`. Do not use `next start` unless standalone output is removed.
 
 ## Local Web With Docker PostgreSQL
 
@@ -188,6 +201,12 @@ npm run db:redo
 npm run db:seed
 ```
 
+`db:down` rolls back one applied migration. To roll back multiple migrations, pass a count after `--`:
+
+```powershell
+npm run db:down -- 3
+```
+
 Migration files use `node-pg-migrate` UTC filenames with milliseconds, for example:
 
 ```text
@@ -201,6 +220,7 @@ Keep the 17-digit prefix so `npm run db:up` can determine migration order withou
 Source checks:
 
 ```powershell
+npm run verify:source
 npm run lint
 npm run typecheck
 npm run build
@@ -278,33 +298,57 @@ GET /site.webmanifest
 ## Project Structure
 
 ```text
+apps/
+  web/                active Next.js frontend and route adapter workspace
+  api/                backend DB, validation, services, API helpers
 docs/
   assets/             mockups and project images
+  architecture/       source split and import boundary docs
   phases/             approved phase specs
   project/            original project prompt/context
 migrations/           PostgreSQL migrations
+packages/
+  shared/             shared types, schemas, constants, pure utils
+  config/             future shared tooling config
 scripts/
   admin/              admin CLI commands
   db/                 migration and seed runners
   dev/                local repair utilities
   verify/             executable verification scripts
-src/
+apps/web/src/
   app/                Next.js App Router pages and route handlers
   components/         UI components
   data/               seed data and public site content source
-  db/                 database client and queries
-  lib/                validation, auth/session, formatting, env helpers
-  services/           admin order/customer/analytics services
+  lib/                NextAuth session guards, UI formatting, SEO metadata
+apps/api/src/
+  db/                 PostgreSQL client and query repositories
+  lib/                server env, API responses, OpenAPI, API validation
+  services/           admin order/customer/waitlist/analytics services
 ```
+
+The source split is currently in Phase 6. Runtime web code lives in `apps/web/src/` and public assets live in `apps/web/public/`. Backend DB/repository/service code lives in `apps/api/src/` and is imported through `@bep-nha-minh/api`. Docker has separate web and API/tools build targets. Next.js route handlers remain in `apps/web/src/app/api` as thin adapters until a standalone HTTP API runtime is approved.
 
 Notable public UI components:
 
 ```text
-src/components/layout/floating-actions.tsx   fixed hotline and scroll-to-top
-src/app/api/docs/route.ts                    Swagger UI
-src/app/api/openapi.json/route.ts            OpenAPI JSON
-src/lib/openapi.ts                           OpenAPI schema source
-src/lib/site.ts                              shared brand, SEO, hotline, social metadata
+apps/web/src/components/layout/floating-actions.tsx   fixed hotline and scroll-to-top
+apps/web/src/app/api/docs/route.ts                    Swagger UI
+apps/web/src/app/api/openapi.json/route.ts            OpenAPI JSON
+apps/api/src/lib/openapi.ts                           OpenAPI schema source
+apps/web/src/lib/site.ts                              shared brand, SEO, hotline, social metadata
+```
+
+Source split architecture:
+
+```text
+docs/architecture/source-split.md
+docs/phases/phase_1_source_split.md
+docs/phases/phase_2_shared.md
+docs/phases/phase_3_web.md
+docs/phases/phase_4_api.md
+docs/phases/phase_5_admin_operations.md
+docs/phases/phase_5_docker_lifecycle.md
+docs/phases/phase_6_cleanup_verification.md
 ```
 
 ## Troubleshooting
@@ -327,7 +371,7 @@ If local dependencies are broken:
 npm run repair:node-modules
 ```
 
-If `npm run start` says `.next/standalone/server.js` is missing:
+If `npm run start` says `.next/standalone/apps/web/server.js` is missing:
 
 ```powershell
 npm run build

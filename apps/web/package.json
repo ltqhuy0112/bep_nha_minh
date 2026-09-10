@@ -1,0 +1,12 @@
+{
+  "name": "@bep-nha-minh/web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Next.js frontend workspace for Bep Nha Minh.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "node .next/standalone/apps/web/server.js",
+    "typecheck": "tsc --noEmit"
+  }
+}

@@ -17,23 +17,33 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
     "paths": {
+      "@bep-nha-minh/shared": [
+        "./packages/shared/src/index.ts"
+      ],
+      "@bep-nha-minh/shared/*": [
+        "./packages/shared/src/*"
+      ],
+      "@bep-nha-minh/api": [
+        "./apps/api/src/index.ts"
+      ],
+      "@bep-nha-minh/api/*": [
+        "./apps/api/src/*"
+      ],
       "@/*": [
-        "./src/*"
+        "./apps/web/src/*"
       ]
     }
   },
   "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
+    "apps/web/next-env.d.ts",
+    "apps/web/src/**/*.ts",
+    "apps/web/src/**/*.tsx",
+    "apps/web/.next/types/**/*.ts",
+    "apps/web/.next/dev/types/**/*.ts",
+    "apps/api/src/**/*.ts",
+    "packages/shared/src/**/*.ts",
+    "scripts/**/*.ts"
   ],
   "exclude": [
     "node_modules"

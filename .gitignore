@@ -1,6 +1,7 @@
 # Dependencies
 node_modules/
 .pnpm-store/
+.npm-cache/
 
 # Next.js and build output
 .next/

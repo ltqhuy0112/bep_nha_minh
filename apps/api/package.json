@@ -1,0 +1,17 @@
+{
+  "name": "@bep-nha-minh/api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Backend API workspace for Bep Nha Minh.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./data/*": "./src/data/*",
+    "./db/*": "./src/db/*",
+    "./lib/*": "./src/lib/*",
+    "./services/*": "./src/services/*"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  }
+}

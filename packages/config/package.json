@@ -1,0 +1,6 @@
+{
+  "name": "@bep-nha-minh/config",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Future shared tooling config package for Bep Nha Minh."
+}

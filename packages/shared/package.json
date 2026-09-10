@@ -1,0 +1,20 @@
+{
+  "name": "@bep-nha-minh/shared",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared TypeScript types, schemas, constants, and pure utilities for Bep Nha Minh.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./constants/i18n": "./src/constants/i18n.ts",
+    "./constants/order-status": "./src/constants/order-status.ts",
+    "./schemas/waitlist": "./src/schemas/waitlist.ts",
+    "./types/admin": "./src/types/admin.ts",
+    "./types/api-response": "./src/types/api-response.ts",
+    "./types/site": "./src/types/site.ts",
+    "./utils/phone": "./src/utils/phone.ts"
+  },
+  "dependencies": {
+    "zod": "^4.1.13"
+  }
+}
