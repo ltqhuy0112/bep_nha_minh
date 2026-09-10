@@ -12,7 +12,8 @@ conflicts are recorded in section 8 of the approved specification.
 | 1 | Business rules, schema, invariants and acceptance plan | Approved with open configuration; see the specification's runtime gates |
 | [2](phase_2_foundation.md) | Additive migrations, legacy compatibility and independent API foundation | Implemented; verification recorded in the phase report |
 | [3.1](phase_3_1_catalog.md) | Read-only VI/EN catalog, availability and fulfillment configuration | Implemented; checkout remains disabled |
-| 3.2 | Customer authentication, sessions, email verification/reset and Google/Facebook OAuth | Next; implementation not started |
+| [3.2](phase_3_2_customer_auth.md) | Customer authentication, sessions, email verification/reset and Google OAuth; Facebook deferred | PHASE 3.2 COMPLETE / PRODUCTION GATED: development accepted by user; Facebook disabled; production configuration and operational gates remain open |
+| [3.3](phase_3_3_auth_navigation.md) | Dedicated auth screens, account separation and safe return navigation | Implemented; scoped route/email tests, typecheck, lint and desktop/mobile UI checks passed |
 | Remaining Phase 3 | Customer addresses and guest/account cart | Not started; confirm implementation packet before coding |
 | 4 | COD checkout, ownership/claim, reservations, cancellation and admin integration | Not started |
 | 5 | 60-second review, stock reconciliation, validation/alerts, outbox/RabbitMQ and resilience | Not started |
@@ -55,5 +56,5 @@ finishes. Do not rewrite migrations or reset customer data to clean the project.
 
 See the [project README](../../../README.md) for local/Docker setup, migration,
 catalog seed and slot configuration commands. Recheck open security/configuration
-gates before enabling each new flow. Phase 3.2 is intentionally excluded from the
-current cleanup and foundation/catalog commit.
+gates before enabling each new flow. The foundation/catalog commit predates Phase
+3.2; development sign-off and remaining production gates are recorded in its separate report.

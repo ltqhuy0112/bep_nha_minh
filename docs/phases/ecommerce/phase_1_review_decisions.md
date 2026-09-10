@@ -1,6 +1,6 @@
 # Phase 1 - Kết quả review song song và quyết định kiến trúc
 
-Ngày: 2026-09-10. Trạng thái: schema đã được người dùng phê duyệt và triển khai trong [Phase 2](phase_2_foundation.md). Các gate runtime còn mở vẫn áp dụng; xem [lộ trình hiện tại](README.md). Phase 3.2 chưa triển khai.
+Ngày: 2026-09-10. Trạng thái: schema đã được người dùng phê duyệt và triển khai trong [Phase 2](phase_2_foundation.md). Các gate runtime còn mở vẫn áp dụng; xem [lộ trình hiện tại](README.md). [Phase 3.2](phase_3_2_customer_auth.md) đang triển khai phần auth local, chưa hoàn tất OAuth hoặc production gates.
 
 Review thiết kế ban đầu dùng hai agent độc lập, chỉ đọc. Agent A kiểm tra domain/database; Agent B kiểm tra concurrency/worker. Lead đối chiếu schema legacy, loại trùng và tổng hợp khuyến nghị dưới đây. Phần review thiết kế không sửa code hoặc migration; kết quả triển khai được ghi riêng theo phase.
 
@@ -454,6 +454,8 @@ Giới hạn 20/product cũng configurable. Các thời hạn đã được ngư
 Đây là approval TTL, không khẳng định auth đã được triển khai hoặc test PASS. Single-use phải được consume atomically để hai request đồng thời không cùng dùng thành công; VIEW có thể đọc lại khi chưa hết hạn/revoke và không có quyền mutation. Không tự quyết định sliding renewal của session chỉ từ giá trị 30 ngày.
 
 ### Email và OAuth đã duyệt
+
+- Bổ sung đã duyệt ngày 2026-09-10: `customer_oauth_transactions` (state hash, browser binding hash, PKCE mã hóa, callback snapshot allowlist, TTL 10 phút single-use) và `customer_auth_rate_limits` (scope/key HMAC/window, atomic increment, expiry cleanup). Cho phép tạo additive migration cho hai bảng; không thay thế audit log. Schema chi tiết và bằng chứng kiểm thử được theo dõi trong [Phase 3.2](phase_3_2_customer_auth.md#approved-auth-state-schemas). Approval này không đồng nghĩa OAuth/provider hoặc auth production đã hoàn tất.
 
 - Email dùng provider abstraction; production ưu tiên Resend/Postmark/AWS SES/SendGrid. Đây là danh sách lựa chọn được chấp nhận, chưa tự chọn một provider hoặc cài toàn bộ SDK.
 - Cấu hình qua env/secret: `EMAIL_PROVIDER`, `EMAIL_FROM`, `PUBLIC_WEB_URL` và API key của provider. API key chỉ ở backend/secret store; không đưa vào `NEXT_PUBLIC_*`, log hoặc Git.

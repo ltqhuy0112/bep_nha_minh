@@ -6,6 +6,10 @@ The commerce track currently adds a read-only VI/EN catalog and product availabi
 
 See the [commerce roadmap and approved decisions](docs/phases/ecommerce/README.md) before continuing a commerce phase.
 
+Customer authentication starts at `/vi/auth/login` or `/en/auth/login`; profiles live at `/{locale}/account`. Auth is disabled by default in the example configuration. Development acceptance is complete for local login, Google OAuth and Resend; Facebook is deferred/disabled and production remains gated. See [Phase 3.2](docs/phases/ecommerce/phase_3_2_customer_auth.md) for configuration and [Phase 3.3](docs/phases/ecommerce/phase_3_3_auth_navigation.md) for UI routes. Admin authentication is unchanged.
+
+Registration and password-reset emails are queued, not sent by the web/API process. In an explicitly configured development environment, run `npm run email:dispatch:auth -- --watch` in a separate terminal. This command sends real email. Duplicate registration does not replace an existing password; Google-only accounts cannot reset a local password they do not have.
+
 Current public features include Vietnamese/English pages, waitlist signup, SEO metadata, structured data, sitemap/robots, OpenAPI documentation, botanical brand styling, fixed hotline contact, and scroll-to-top controls.
 
 ## Commerce Catalog (Phase 3.1)
