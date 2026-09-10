@@ -5,9 +5,9 @@ services:
     region: ohio
     runtime: node
     plan: free
-    buildCommand: npm ci --include=dev
+    buildCommand: npm ci --include=dev && npm run lint && npm run typecheck && npm run verify:prelaunch
     startCommand: npm --workspace @bep-nha-minh/api run start
-    autoDeployTrigger: checksPass
+    autoDeployTrigger: commit
     healthCheckPath: /api/v1/health/live
     envVars:
       - key: API_HOST
@@ -32,9 +32,9 @@ services:
     region: ohio
     runtime: node
     plan: free
-    buildCommand: npm ci --include=dev && npm run build && node scripts/deploy/prepare-standalone.cjs
+    buildCommand: npm ci --include=dev && npm run lint && npm run typecheck && npm run verify:prelaunch && npm run build && node scripts/deploy/prepare-standalone.cjs
     startCommand: npm --workspace @bep-nha-minh/web run start
-    autoDeployTrigger: checksPass
+    autoDeployTrigger: commit
     envVars:
       - key: HOSTNAME
         value: 0.0.0.0

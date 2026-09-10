@@ -12,6 +12,8 @@ Tai lieu nay huong dan moi truong xem truoc mien phi, khong phai production. Tra
 
 ## CI va deploy gate
 
+Giai doan hien tai: GitHub Actions bi billing lock. Nguoi dung da duyet dung Render pipeline truoc. Render theo doi commit tren `codex/prelaunch-free`, chay lint/typecheck/verify:prelaunch trong build command cho ca hai service; web con build Next.js. Bat ky buoc nao fail se dung deploy. Khong phu thuoc checksPass cua GitHub cho den khi billing duoc xu ly. Cac mo ta checksPass ben duoi la phuong an quay lai GitHub CI sau nay, khong phai trigger hien tai.
+
 Push len `codex/prelaunch-free` chay CI: lint, typecheck, `verify:prelaunch` khong can database va build. Render tu deploy branch nay sau khi checks pass. CI dung `NEXT_PUBLIC_SITE_URL=https://example.invalid`; Render build dung URL web that. `workflow_dispatch` mac dinh `deploy=false`.
 
 Job deploy chi chay khi chon `deploy=true` tu `main`, CI pass va environment `production` duoc phe duyet. Job kiem tra hook la HTTPS tai `api.render.com`, POST SHA commit chinh xac bang `ref`, va khong in URL hook hoac credential.
