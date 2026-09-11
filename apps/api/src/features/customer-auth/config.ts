@@ -24,8 +24,27 @@ export function readCustomerAuthConfig(env: NodeJS.ProcessEnv): CustomerAuthConf
     throw new Error("PUBLIC_WEB_URL must be a plain HTTP(S) origin.");
   }
   // Shared enforcement alone does not close OAuth, revocation and operational gates.
-  if (enabled && env.NODE_ENV === "production") {
-    throw new Error("Customer auth production gate: OAuth verification and security/operational policy approval required.");
+  const deploymentStage =
+      env.DEPLOYMENT_STAGE ?? (env.NODE_ENV === "production" ? "production" : "development");
+
+  if (
+      enabled &&
+      deploymentStage === "production"
+  ) {
+    const oauthVerified =
+        env.CUSTOMER_AUTH_OAUTH_VERIFIED === "true";
+
+    const securityApproved =
+        env.CUSTOMER_AUTH_SECURITY_POLICY_APPROVED === "true";
+
+    const operationsApproved =
+        env.CUSTOMER_AUTH_OPERATIONS_APPROVED === "true";
+
+    if (!oauthVerified || !securityApproved || !operationsApproved) {
+      throw new Error(
+          "Customer auth production gate: OAuth verification and security/operational policy approval required."
+      );
+    }
   }
   if (enabled && env.CUSTOMER_AUTH_SESSION_POLICY !== "fixed-revoke-on-password-reset") {
     throw new Error("Explicit CUSTOMER_AUTH_SESSION_POLICY is required for local auth.");
