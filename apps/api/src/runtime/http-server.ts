@@ -10,6 +10,7 @@ import type { createLocationHandler } from "../features/locations/http";
 import type { createCartHandler } from "../features/cart/http";
 
 export type ApiServerOptions = HealthDependencies & {
+  orderingEnabled?: boolean;
   catalogDatabase?: CatalogDatabase;
   customerAuthHandler?: ReturnType<typeof createCustomerAuthHandler>;
   customerAddressHandler?: ReturnType<typeof createCustomerAddressHandler>;
@@ -40,6 +41,10 @@ async function handleRequest(
     return;
   }
   const path = url.pathname;
+  if (path === "/api/v1/cart" && options.orderingEnabled === false) {
+    sendJson(response, 503, errorEnvelope("ORDERING_NOT_ENABLED", "Ordering is not open yet."));
+    return;
+  }
 
   if (options.customerAuthHandler && await options.customerAuthHandler(request, response, url)) return;
   if (options.customerAddressHandler && await options.customerAddressHandler(request, response, url)) return;

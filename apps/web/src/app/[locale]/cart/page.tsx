@@ -6,6 +6,8 @@ import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
 import { HtmlLangSync } from "@/components/layout/html-lang-sync";
 import { CartClient } from "@/features/cart/components/cart-client";
+import { PrelaunchCart } from "@/features/cart/components/prelaunch-cart";
+import { orderingEnabled } from "@/lib/ordering";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -19,5 +21,5 @@ export default async function CartPage({ params }: { params: Promise<{ locale: s
   if (!isLocale(locale)) notFound();
   const content = siteContents[locale];
   const nav = content.nav.map((item) => ({ ...item, href: `/${locale}${item.href}` }));
-  return <><HtmlLangSync locale={locale} /><Header nav={nav} locale={locale} labels={content.header} /><CartClient locale={locale} /><Footer description={content.footer.description} links={content.social.links} /></>;
+  return <><HtmlLangSync locale={locale} /><Header nav={nav} locale={locale} labels={content.header} />{orderingEnabled ? <CartClient locale={locale} /> : <PrelaunchCart locale={locale} />}<Footer description={content.footer.description} links={content.social.links} /></>;
 }

@@ -1,0 +1,60 @@
+name: Prelaunch
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop, codex/prelaunch-free]
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: Request the protected production deploy after CI succeeds.
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_ORDERING_ENABLED: 'false'
+      CUSTOMER_AUTH_ENABLED: 'false'
+      NEXT_PUBLIC_SITE_URL: https://example.invalid
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run verify:prelaunch
+      - run: npm run build
+
+  deploy-production:
+    needs: ci
+    if: github.event_name == 'workflow_dispatch' && inputs.deploy == true && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    concurrency:
+      group: production-deploy
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Trigger exact API commit on Render
+        env:
+          RENDER_API_DEPLOY_HOOK_URL: ${{ secrets.RENDER_API_DEPLOY_HOOK_URL }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: python3 scripts/deploy/trigger-render-deploy.py api RENDER_API_DEPLOY_HOOK_URL $GITHUB_SHA
+      - name: Trigger exact web commit on Render
+        env:
+          RENDER_WEB_DEPLOY_HOOK_URL: ${{ secrets.RENDER_WEB_DEPLOY_HOOK_URL }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: python3 scripts/deploy/trigger-render-deploy.py web RENDER_WEB_DEPLOY_HOOK_URL $GITHUB_SHA

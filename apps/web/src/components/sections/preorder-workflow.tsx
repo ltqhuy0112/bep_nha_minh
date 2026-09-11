@@ -22,10 +22,10 @@ export function PreorderWorkflow({ workflow, heading }: PreorderWorkflowProps) {
           description={heading.description}
         />
 
-        <div className="mt-10 grid gap-4 md:grid-cols-5">
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
           {workflow.map((item, index) => (
             <MotionReveal key={item.step} delay={index * 0.04}>
-              <article className="h-full rounded-[24px] border border-cream-100/15 bg-cream-100/7 p-5">
+              <article className="h-full border-t border-cream-100/25 pt-5">
                 <span className="text-sm font-bold text-beige-200">{item.step}</span>
                 <h3 className="mt-5 font-serif text-2xl leading-tight">{item.title}</h3>
                 <p className="mt-3 text-sm leading-6 text-cream-100/75">

@@ -2,13 +2,21 @@
 
 Lightweight brand bio website for **Bếp Nhà Mình**, backed by PostgreSQL for waitlist leads, site content, demo admin users, customers, orders, order history, audit logs, and admin analytics.
 
-The commerce track includes a VI/EN catalog, product availability, gated customer authentication and guest/account carts at `/vi/cart` or `/en/cart`. Checkout and payment collection remain disabled. Products with `accepting_orders=false` cannot be added to a cart; cart support does not automatically enable sales.
+The public website defaults to **pre-launch**: brand introduction, planned menu and opening notifications. Existing guest/account cart code is retained behind `NEXT_PUBLIC_ORDERING_ENABLED=true`. Checkout and payment collection remain disabled.
+
+## Pre-launch Configuration
+
+`NEXT_PUBLIC_ORDERING_ENABLED=false` is the safe default, including when absent. The header/catalog hide ordering actions and `/vi/cart` / `/en/cart` render the pre-launch screen without initializing or fetching a cart. The web BFF and standalone API also reject cart requests while disabled.
+
+This is a Next.js **build-time** public flag: after changing it, restart local web/API; production requires rebuilding the web image and setting the same flag on the API. Docker Compose passes the flag and `NEXT_PUBLIC_SITE_URL` as build arguments. Do not put secrets in `NEXT_PUBLIC_*` variables.
+
+Run `npm run verify:prelaunch` for the focused pre-launch guard checks. Free-hosting setup, GitHub Actions and manual deployment gates are described in [the deployment runbook](docs/operations/prelaunch-deployment.md). No production deploy is performed automatically by this change.
 
 See the [commerce roadmap and approved decisions](docs/phases/ecommerce/README.md) before continuing a commerce phase.
 
 For Phase 3.5, `npm run verify:cart` runs only isolated cart API and BFF checks, not email/OAuth/admin regressions. See the [cart implementation and remaining gates](docs/phases/ecommerce/phase_3_5_cart.md).
 
-To seed the four healthy demo meals and enable adding them to carts locally, run `npm run db:seed:catalog -- --for-cart`. This preserves existing prices/translations, skips archived or fulfillment-blocked products, and does not create inventory/orders or enable checkout. Without the flag, newly seeded products remain disabled.
+To seed the four healthy demo meals and enable adding them to carts locally, run `npm run db:seed:catalog -- --for-cart` and explicitly enable `NEXT_PUBLIC_ORDERING_ENABLED=true` in development. This preserves existing prices/translations, skips archived or fulfillment-blocked products, and does not create inventory/orders or enable checkout. Without the seed flag, newly seeded products remain disabled. Do not run demo seeds against production.
 
 Customer authentication starts at `/vi/auth/login` or `/en/auth/login`; profiles live at `/{locale}/account`. Auth is disabled by default in the example configuration. Development acceptance is complete for local login, Google OAuth and Resend; Facebook is deferred/disabled and production remains gated. See [Phase 3.2](docs/phases/ecommerce/phase_3_2_customer_auth.md) for configuration and [Phase 3.3](docs/phases/ecommerce/phase_3_3_auth_navigation.md) for UI routes. Admin authentication is unchanged.
 

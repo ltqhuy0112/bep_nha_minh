@@ -61,14 +61,14 @@ export function useCatalogProduct(slug: string, locale: CatalogLocale) {
   return { data: isCurrentRequest ? state.data : null, loading: !isCurrentRequest, error: isCurrentRequest ? state.error : null, retry: () => setRefresh((value) => value + 1) };
 }
 
-export function useFulfillmentSlots(date: string | null) {
+export function useFulfillmentSlots(date: string | null, enabled = true) {
   const [refresh, setRefresh] = useState(0);
   const [state, setState] = useState<LoadState<{ items: FulfillmentSlot[] }>>(initialState);
   const requestId = useRef(0);
   const requestKey = `${date ?? ""}:${refresh}`;
   useEffect(() => {
     const activeRequest = ++requestId.current;
-    if (!date) {
+    if (!date || !enabled) {
       return;
     }
     const controller = new AbortController();
@@ -79,19 +79,19 @@ export function useFulfillmentSlots(date: string | null) {
         setState({ data: null, error: toRequestError(error), key: requestKey });
       });
     return () => controller.abort();
-  }, [date, requestKey]);
+  }, [date, enabled, requestKey]);
   const isCurrentRequest = state.key === requestKey;
   return { data: date && isCurrentRequest ? state.data : null, loading: Boolean(date) && !isCurrentRequest, error: date && isCurrentRequest ? state.error : null, retry: () => setRefresh((value) => value + 1) };
 }
 
-export function useAvailability(slug: string, locale: CatalogLocale, date: string | null, slotKey: string | null) {
+export function useAvailability(slug: string, locale: CatalogLocale, date: string | null, slotKey: string | null, enabled = true) {
   const [refresh, setRefresh] = useState(0);
   const requestKey = `${slug}:${locale}:${date ?? ""}:${slotKey ?? ""}`;
   const [state, setState] = useState<LoadState<ProductAvailability>>(initialState);
   const requestId = useRef(0);
   useEffect(() => {
     const activeRequest = ++requestId.current;
-    if (!date || !slotKey) {
+    if (!date || !slotKey || !enabled) {
       return;
     }
     const controller = new AbortController();
@@ -102,7 +102,7 @@ export function useAvailability(slug: string, locale: CatalogLocale, date: strin
         setState({ data: null, error: toRequestError(error), key: requestKey });
       });
     return () => controller.abort();
-  }, [slug, locale, date, slotKey, requestKey, refresh]);
+  }, [slug, locale, date, slotKey, enabled, requestKey, refresh]);
   const isCurrentRequest = state.key === requestKey;
   return {
     data: isCurrentRequest ? state.data : null,

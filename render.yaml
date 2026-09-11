@@ -1,0 +1,73 @@
+databases:
+  - name: bep-nha-minh-db
+    plan: free
+    region: ohio
+
+services:
+  - type: web
+    name: bep-nha-minh-api
+    branch: codex/prelaunch-free
+    region: ohio
+    runtime: node
+    plan: free
+    buildCommand: npm ci --include=dev && npm run lint && npm run typecheck && npm run verify:prelaunch
+    startCommand: npm --workspace @bep-nha-minh/api run start
+    autoDeployTrigger: commit
+    healthCheckPath: /api/v1/health/live
+    envVars:
+      - key: API_HOST
+        value: 0.0.0.0
+      - key: API_PORT
+        value: 10000
+      - key: NODE_VERSION
+        value: 22
+      - key: NEXT_PUBLIC_ORDERING_ENABLED
+        value: 'false'
+      - key: CUSTOMER_AUTH_ENABLED
+        value: 'false'
+
+      - key: DATABASE_URL
+        fromDatabase:
+          name: bep-nha-minh-db
+          property: connectionString
+
+      - key: NEXT_PUBLIC_SITE_URL
+        sync: false
+      - key: PUBLIC_WEB_URL
+        sync: false
+
+  - type: web
+    name: bep-nha-minh-web
+    branch: codex/prelaunch-free
+    region: ohio
+    runtime: node
+    plan: free
+    buildCommand: npm ci --include=dev && npm run lint && npm run typecheck && npm run verify:prelaunch && npm run build && node scripts/deploy/prepare-standalone.cjs
+    startCommand: npm --workspace @bep-nha-minh/web run start
+    autoDeployTrigger: commit
+    envVars:
+      - key: HOSTNAME
+        value: 0.0.0.0
+      - key: PORT
+        value: 10000
+      - key: NODE_VERSION
+        value: 22
+      - key: NEXT_PUBLIC_ORDERING_ENABLED
+        value: 'false'
+      - key: CUSTOMER_AUTH_ENABLED
+        value: 'false'
+
+      - key: DATABASE_URL
+        fromDatabase:
+          name: bep-nha-minh-db
+          property: connectionString
+
+      - key: NEXT_PUBLIC_SITE_URL
+        sync: false
+      - key: PUBLIC_WEB_URL
+        sync: false
+      - key: COMMERCE_API_URL
+        sync: false
+
+      - key: AUTH_SECRET
+        generateValue: true

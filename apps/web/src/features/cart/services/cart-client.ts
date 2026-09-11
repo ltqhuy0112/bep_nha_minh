@@ -1,5 +1,6 @@
 import type { Cart } from "@bep-nha-minh/shared/types/cart";
 import type { CartLocale, CartSlot } from "../types";
+import { formatDeliverySlot, formatSlotTime } from "../presentation";
 
 type Envelope<T> = { data: T; version?: string };
 type CartAction =
@@ -37,8 +38,9 @@ export function mergeCart(locale: CartLocale, expectedVersion: number, guestVers
   return mutate({ action: "merge", locale, expectedVersion, guestVersion, slotSource });
 }
 
-export async function getCartSlots(date: string, signal?: AbortSignal) {
-  return request<{ items: CartSlot[] }>(`/api/catalog/fulfillment-slots?${new URLSearchParams({ date })}`, { signal });
+export async function getCartSlots(date: string, locale: CartLocale, signal?: AbortSignal) {
+  const result = await request<{ items: CartSlot[] }>(`/api/catalog/fulfillment-slots?${new URLSearchParams({ date })}`, { signal });
+  return { items: result.items.map((slot) => { const formatted = formatDeliverySlot(slot, locale); return { ...slot, label: formatted.label, startLocalTime: formatSlotTime(slot.startLocalTime), endLocalTime: formatSlotTime(slot.endLocalTime) }; }) };
 }
 
 async function mutate(action: CartAction) {

@@ -1,6 +1,7 @@
 x-app-env: &app-env
   DATABASE_URL: postgresql://${POSTGRES_USER:-bep_user}:${POSTGRES_PASSWORD:-bep_password}@postgres:5432/${POSTGRES_DB:-bep_nha_minh}
   NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+  NEXT_PUBLIC_ORDERING_ENABLED: ${NEXT_PUBLIC_ORDERING_ENABLED:-false}
   BUSINESS_TIMEZONE: ${BUSINESS_TIMEZONE:-Asia/Ho_Chi_Minh}
   AUTH_SECRET: ${AUTH_SECRET:-dev-only-change-this-admin-auth-secret}
   NEXT_PUBLIC_INSTAGRAM_URL: ${NEXT_PUBLIC_INSTAGRAM_URL:-}
@@ -101,6 +102,9 @@ services:
       context: .
       dockerfile: Dockerfile
       target: web
+      args:
+        NEXT_PUBLIC_ORDERING_ENABLED: ${NEXT_PUBLIC_ORDERING_ENABLED:-false}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
     container_name: bep-nha-minh-web
     restart: unless-stopped
     depends_on:

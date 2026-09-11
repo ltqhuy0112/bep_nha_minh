@@ -25,10 +25,7 @@ html {
 
 body {
   margin: 0;
-  background:
-    radial-gradient(circle at 12% 0%, rgb(124 143 90 / 0.13), transparent 28rem),
-    radial-gradient(circle at 88% 16%, rgb(165 122 80 / 0.08), transparent 24rem),
-    linear-gradient(180deg, #fff9ed 0%, #f8f0e1 42%, #fff9ed 100%);
+  background: #fff9ed;
   color: var(--color-text);
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   text-rendering: optimizeLegibility;
@@ -130,7 +127,7 @@ select {
 
 .botanical-soft::before,
 .botanical-soft::after {
-  opacity: 0.14;
+  opacity: 0.08;
 }
 
 .botanical-hero {

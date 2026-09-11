@@ -29,6 +29,7 @@ pool.on("error", () => {
   console.error("API database pool error.");
 });
 const server = createApiServer({
+  orderingEnabled: process.env.NEXT_PUBLIC_ORDERING_ENABLED === "true",
   database: {
     query: (statement) => pool.query(statement)
   },

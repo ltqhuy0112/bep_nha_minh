@@ -2,6 +2,7 @@ import "server-only";
 import type { NextRequest } from "next/server";
 import { cartCommandSchema } from "@bep-nha-minh/shared/schemas/cart";
 import { z } from "zod";
+import { orderingEnabled } from "../../../lib/ordering";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,6 +18,7 @@ export const GET = proxy;
 export const POST = proxy;
 
 async function proxy(request: NextRequest) {
+  if (!orderingEnabled) return error(503, "ORDERING_NOT_ENABLED");
   if (request.method !== "GET" && request.method !== "POST") return methodNotAllowed();
   const locale = readLocale(request);
   if (request.method === "GET" && !locale) return error(400, "VALIDATION_ERROR");
