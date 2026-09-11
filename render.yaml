@@ -32,7 +32,7 @@ services:
       - key: NEXT_PUBLIC_ORDERING_ENABLED
         value: 'false'
       - key: CUSTOMER_AUTH_ENABLED
-        value: 'false'
+        value: 'true'
 
       - key: DATABASE_URL
         fromDatabase:
@@ -63,7 +63,7 @@ services:
       - key: NEXT_PUBLIC_ORDERING_ENABLED
         value: 'false'
       - key: CUSTOMER_AUTH_ENABLED
-        value: 'false'
+        value: 'true'
 
       - key: DATABASE_URL
         fromDatabase:
