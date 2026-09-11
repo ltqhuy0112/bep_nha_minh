@@ -18,7 +18,8 @@ services:
       npm run db:up &&
       npm run locations:sync &&
       npm run db:seed:catalog &&
-      npm run db:configure:slots
+      npm run db:configure:slots &&
+      npm run admin:create -- --email=admin@bepnhaminh.com --name="Bếp Nhà Mình admin" --role=SUPER_ADMIN
     startCommand: npm --workspace @bep-nha-minh/api run start
     autoDeployTrigger: commit
     healthCheckPath: /api/v1/health/live
