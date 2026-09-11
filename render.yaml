@@ -10,7 +10,7 @@ services:
     region: ohio
     runtime: node
     plan: free
-    buildCommand: npm ci --include=dev && npm run lint && npm run typecheck && npm run verify:prelaunch && npm run db:up
+    buildCommand: npm ci --include=dev && npm run lint && npm run typecheck && npm run verify:prelaunch && npm run db:up && npm run locations:download && npm run locations:sync
     startCommand: npm --workspace @bep-nha-minh/api run start
     autoDeployTrigger: commit
     healthCheckPath: /api/v1/health/live
