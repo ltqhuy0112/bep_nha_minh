@@ -16,7 +16,6 @@ services:
       npm run typecheck &&
       npm run verify:prelaunch &&
       npm run db:up &&
-      npm run locations:download &&
       npm run locations:sync &&
       npm run db:seed:catalog &&
       npm run db:configure:slots
