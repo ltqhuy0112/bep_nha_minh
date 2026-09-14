@@ -3,7 +3,8 @@
 import Image from "next/image";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import type { Cart } from "@bep-nha-minh/shared/types/cart";
-import { formatPrice, getProductPresentation } from "@/features/catalog/presentation";
+import { formatPrice } from "@/lib/money";
+import { getProductPresentation } from "@/lib/product-presentation";
 import { cartCopy } from "../copy";
 import type { CartItem, CartLocale } from "../types";
 

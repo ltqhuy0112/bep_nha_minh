@@ -6,11 +6,32 @@ const args = process.argv.slice(2);
 if (args.some((arg) => arg !== "--for-cart") || args.length > 1) throw new Error("Usage: db:seed:catalog [--for-cart]");
 const forCart = args.includes("--for-cart");
 
-const databaseUrl = process.env.DATABASE_URL ??
-  "postgresql://bep_user:bep_password@localhost:5432/bep_nha_minh";
+const databaseUrl = process.env.DATABASE_URL ?? "postgresql://bep_user:bep_password@localhost:5432/bep_nha_minh";
+
 const target = new URL(databaseUrl);
-if (process.env.NODE_ENV === "production" || !["localhost", "127.0.0.1", "[::1]"].includes(target.hostname)) {
-  throw new Error("Demo catalog seed requires a local development database.");
+
+const deploymentStage =
+    process.env.DEPLOYMENT_STAGE ??
+    (process.env.NODE_ENV === "production"
+        ? "production"
+        : "development");
+
+if (!["development", "prelaunch", "production"].includes(deploymentStage)) {
+  throw new Error("Invalid DEPLOYMENT_STAGE");
+}
+
+const isLocalHost = ["localhost", "127.0.0.1", "[::1]", "postgres"].includes(target.hostname);
+
+if (deploymentStage !== "development" && deploymentStage !== "prelaunch") {
+  throw new Error(
+      "Demo catalog seed is only allowed in development/prelaunch environments."
+  );
+}
+
+if (deploymentStage === "development" && !isLocalHost) {
+  throw new Error(
+      "Development catalog seed requires a local database."
+  );
 }
 
 const products = [

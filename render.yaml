@@ -10,7 +10,16 @@ services:
     region: ohio
     runtime: node
     plan: free
-    buildCommand: npm ci --include=dev && npm run lint && npm run typecheck && npm run verify:prelaunch
+    buildCommand: >
+      npm ci --include=dev &&
+      npm run lint &&
+      npm run typecheck &&
+      npm run verify:prelaunch &&
+      npm run db:up &&
+      npm run locations:sync &&
+      npm run db:seed:catalog &&
+      npm run db:configure:slots &&
+      npm run admin:create -- --email=admin@bepnhaminh.com --name="Bếp Nhà Mình admin" --role=SUPER_ADMIN
     startCommand: npm --workspace @bep-nha-minh/api run start
     autoDeployTrigger: commit
     healthCheckPath: /api/v1/health/live
@@ -24,7 +33,7 @@ services:
       - key: NEXT_PUBLIC_ORDERING_ENABLED
         value: 'false'
       - key: CUSTOMER_AUTH_ENABLED
-        value: 'false'
+        value: 'true'
 
       - key: DATABASE_URL
         fromDatabase:
@@ -55,7 +64,7 @@ services:
       - key: NEXT_PUBLIC_ORDERING_ENABLED
         value: 'false'
       - key: CUSTOMER_AUTH_ENABLED
-        value: 'false'
+        value: 'true'
 
       - key: DATABASE_URL
         fromDatabase:

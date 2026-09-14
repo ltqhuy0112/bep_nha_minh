@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { siteContents } from "@bep-nha-minh/api/data/site-content";
+import { siteContents } from "@/lib/site-content";
 import { isLocale } from "@bep-nha-minh/shared/constants/i18n";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";

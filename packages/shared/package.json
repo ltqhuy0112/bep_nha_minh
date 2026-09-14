@@ -6,6 +6,7 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./content/site-content": "./src/content/site-content.ts",
     "./constants/i18n": "./src/constants/i18n.ts",
     "./constants/order-status": "./src/constants/order-status.ts",
     "./schemas/waitlist": "./src/schemas/waitlist.ts",

@@ -55,13 +55,58 @@ export async function syncLocations(pool: Pool) {
 }
 
 async function main() {
-  if (process.argv.length > 2) throw new Error("No flags supported");
-  const url = new URL(process.env.DATABASE_URL ?? "postgresql://bep_user:bep_password@localhost:5432/bep_nha_minh");
-  if (process.env.NODE_ENV === "production" || !["localhost", "127.0.0.1", "[::1]", "postgres"].includes(url.hostname)) throw new Error("Only local/dev sync is enabled");
-  const pool = new pg.Pool({ connectionString: url.toString(), max: 1, connectionTimeoutMillis: 3000, statement_timeout: 30000 });
-  try { console.log(JSON.stringify(await syncLocations(pool))); }
-  finally { await pool.end(); }
+  if (process.argv.length > 2) {
+    throw new Error("No flags supported");
+  }
+
+  const url = new URL(
+      process.env.DATABASE_URL ??
+      "postgresql://bep_user:bep_password@localhost:5432/bep_nha_minh"
+  );
+
+  const deploymentStage =
+      process.env.DEPLOYMENT_STAGE ??
+      (process.env.NODE_ENV === "production" ? "production" : "development");
+
+  const isLocalHost = [
+    "localhost",
+    "127.0.0.1",
+    "[::1]",
+    "postgres"
+  ].includes(url.hostname);
+
+  const syncAllowed =
+      deploymentStage === "development" ||
+      deploymentStage === "prelaunch";
+
+  if (!syncAllowed) {
+    throw new Error(
+        "Location sync is only allowed in development/prelaunch environments"
+    );
+  }
+
+  if (deploymentStage === "development" && !isLocalHost) {
+    throw new Error(
+        "Development location sync requires a local database"
+    );
+  }
+
+  const pool = new pg.Pool({
+    connectionString: url.toString(),
+    max: 1,
+    connectionTimeoutMillis: 3000,
+    statement_timeout: 30000
+  });
+
+  try {
+    console.log(JSON.stringify(await syncLocations(pool)));
+  } finally {
+    await pool.end();
+  }
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
-  void main().catch(() => { console.error("Location sync failed. Check local database, migration and dataset manifest. No partial import was activated."); process.exitCode = 1; });
+  void main().catch((error) => {
+    console.error("Location sync failed:", error);
+    process.exitCode = 1;
+  });
 }
