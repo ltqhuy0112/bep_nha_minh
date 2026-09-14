@@ -1,11 +1,12 @@
 import "server-only";
 import type { NextRequest } from "next/server";
+import { boundedBody } from "@/lib/bff/request-body";
+import { isHttpOrigin, forwardNumericRetryAfter, privateResponseHeaders as headers } from "@/lib/bff/http";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 type Context = { params: Promise<{ path?: string[] }> };
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-const headers = { "cache-control": "no-store", "referrer-policy": "no-referrer", "x-content-type-options": "nosniff" };
 const error = (status: number, code: string) => Response.json({ version: "v1", error: { code, message: "Address request failed." } }, { status, headers });
 
 export const GET = proxy;
@@ -25,7 +26,7 @@ async function proxy(request: NextRequest, context: Context) {
   try {
     const publicUrl = new URL(process.env.PUBLIC_WEB_URL ?? "http://localhost:3000");
     const upstream = new URL(process.env.COMMERCE_API_URL ?? "http://127.0.0.1:3001");
-    if (![publicUrl, upstream].every((url) => ["http:", "https:"].includes(url.protocol) && !url.username && !url.password && !url.search && !url.hash && url.pathname === "/")) return error(503, "AUTH_NOT_CONFIGURED");
+    if (![publicUrl, upstream].every(isHttpOrigin)) return error(503, "AUTH_NOT_CONFIGURED");
     const mutation = request.method !== "GET";
     if (mutation && (request.headers.get("origin") !== publicUrl.origin || request.headers.get("sec-fetch-site") === "cross-site")) return error(403, "ORIGIN_NOT_ALLOWED");
     const name = `${publicUrl.protocol === "https:" ? "__Host-" : ""}bnm_customer_session`;
@@ -48,27 +49,7 @@ async function proxy(request: NextRequest, context: Context) {
     const data = await response.json();
     if (data?.version !== "v1" || (!Object.hasOwn(data, "data") && !Object.hasOwn(data, "error"))) return error(502, "UPSTREAM_UNAVAILABLE");
     const outputHeaders = new Headers(headers);
-    const retry = response.headers.get("retry-after");
-    if (retry && /^\d+$/.test(retry)) outputHeaders.set("retry-after", retry);
+    forwardNumericRetryAfter(response, outputHeaders);
     return Response.json(data, { status: response.status, headers: outputHeaders });
   } catch { return error(502, "UPSTREAM_UNAVAILABLE"); }
-}
-
-async function boundedBody(request: NextRequest) {
-  const reader = request.body?.getReader();
-  if (!reader) return "{}";
-  let expired = false;
-  const timer = setTimeout(() => { expired = true; void reader.cancel().catch(() => undefined); }, 5000);
-  let size = 0;
-  const chunks: Uint8Array[] = [];
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
-      if (expired) throw new Error("Body timeout");
-      if (done) return Buffer.concat(chunks).toString("utf8");
-      size += value.length;
-      if (size > 16_384) { await reader.cancel(); return undefined; }
-      chunks.push(value);
-    }
-  } finally { clearTimeout(timer); reader.releaseLock(); }
 }

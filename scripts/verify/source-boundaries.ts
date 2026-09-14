@@ -1,5 +1,7 @@
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
+import { inspectSource, publicBoundaryViolations } from "./source-imports";
+import { graphViolations } from "./source-graph";
 
 const root = process.cwd();
 
@@ -54,25 +56,28 @@ async function listSourceFiles(directory: string): Promise<string[]> {
   return files.flat();
 }
 
-function isClientComponent(source: string) {
-  return /^\s*["']use client["'];/.test(source);
-}
-
 async function verifyRule(rule: Rule) {
   const failures: string[] = [];
   const files = await listSourceFiles(rule.directory);
 
   for (const file of files) {
     const source = await readFile(path.join(root, file), "utf8");
+    const inspected = inspectSource(file, source);
+    const importSource = inspected.imports.map((specifier) => `from "${specifier}"`).join("\n");
     const forbidden =
       rule.scope === "client components must not import backend package" &&
-      isClientComponent(source)
+      inspected.client
         ? [/from\s+["']@bep-nha-minh\/api/]
         : rule.forbidden;
 
     for (const pattern of forbidden) {
-      if (pattern.test(source)) {
+      if (pattern.test(importSource)) {
         failures.push(`${file} violates "${rule.scope}" with ${pattern}`);
+      }
+    }
+    if (rule.directory === "apps/web/src") {
+      for (const specifier of publicBoundaryViolations(file, inspected.imports)) {
+        failures.push(`${file} crosses a public module boundary: ${specifier}`);
       }
     }
   }
@@ -82,6 +87,13 @@ async function verifyRule(rule: Rule) {
 
 async function main() {
   const failures = (await Promise.all(rules.map(verifyRule))).flat();
+  const sources = new Map<string, string>();
+  for (const rule of rules) {
+    for (const file of await listSourceFiles(rule.directory)) {
+      sources.set(file, await readFile(path.join(root, file), "utf8"));
+    }
+  }
+  failures.push(...graphViolations(sources));
 
   if (failures.length > 0) {
     console.error("Source boundary check failed:");

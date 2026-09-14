@@ -3,6 +3,8 @@ import type { NextRequest } from "next/server";
 import { cartCommandSchema } from "@bep-nha-minh/shared/schemas/cart";
 import { z } from "zod";
 import { orderingEnabled } from "../../../lib/ordering";
+import { boundedBody } from "@/lib/bff/request-body";
+import { isHttpOrigin, forwardNumericRetryAfter, privateResponseHeaders as commonHeaders } from "@/lib/bff/http";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -12,7 +14,6 @@ const localeSchema = z.enum(["vi", "en"]);
 const responseSchema = z.object({ version: z.literal("v1") }).passthrough().refine(
   (value) => Object.hasOwn(value, "data") || Object.hasOwn(value, "error")
 );
-const commonHeaders = { "cache-control": "no-store", "referrer-policy": "no-referrer", "x-content-type-options": "nosniff" };
 
 export const GET = proxy;
 export const POST = proxy;
@@ -53,8 +54,7 @@ async function proxy(request: NextRequest) {
     if (!responseSchema.safeParse(data).success) return error(502, "CART_UPSTREAM_UNAVAILABLE");
 
     const outputHeaders = responseHeaders(upstreamResponse, guestCookieName(publicUrl));
-    const retry = upstreamResponse.headers.get("retry-after");
-    if (retry && /^\d+$/.test(retry)) outputHeaders.set("retry-after", retry);
+    forwardNumericRetryAfter(upstreamResponse, outputHeaders);
     return Response.json(data, { status: upstreamResponse.status, headers: outputHeaders });
   } catch {
     return error(502, "CART_UPSTREAM_UNAVAILABLE");
@@ -71,14 +71,14 @@ function readLocale(request: NextRequest) {
 function readPublicUrl() {
   try {
     const value = new URL(process.env.PUBLIC_WEB_URL ?? "http://localhost:3000");
-    return value.pathname === "/" && !value.search && !value.hash && !value.username && !value.password && ["http:", "https:"].includes(value.protocol) ? value : null;
+    return isHttpOrigin(value) ? value : null;
   } catch { return null; }
 }
 
 function readUpstreamUrl() {
   try {
     const value = new URL(process.env.COMMERCE_API_URL ?? "http://127.0.0.1:3001");
-    return value.pathname === "/" && !value.search && !value.hash && !value.username && !value.password && ["http:", "https:"].includes(value.protocol) ? value : null;
+    return isHttpOrigin(value) ? value : null;
   } catch { return null; }
 }
 
@@ -128,25 +128,6 @@ function safeGuestCookie(cookie: string, guestName: string) {
 
 function isValidJsonBody(body: string) {
   try { return cartCommandSchema.safeParse(JSON.parse(body)).success; } catch { return false; }
-}
-
-async function boundedBody(request: NextRequest) {
-  const reader = request.body?.getReader();
-  if (!reader) return "{}";
-  let expired = false;
-  const timer = setTimeout(() => { expired = true; void reader.cancel().catch(() => undefined); }, 5_000);
-  const chunks: Uint8Array[] = [];
-  let size = 0;
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
-      if (expired) throw new Error("Body timeout");
-      if (done) return Buffer.concat(chunks).toString("utf8");
-      size += value.length;
-      if (size > 16_384) { await reader.cancel(); return undefined; }
-      chunks.push(value);
-    }
-  } finally { clearTimeout(timer); reader.releaseLock(); }
 }
 
 function methodNotAllowed() {

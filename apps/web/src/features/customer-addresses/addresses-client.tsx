@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Check, MapPin, Pencil, Plus, RotateCw, Trash2, X } from "lucide-react";
 import type { CustomerAddress } from "@bep-nha-minh/shared/schemas/customer-address";
-import type { Locale } from "../customer-auth/types";
+import type { Locale } from "@bep-nha-minh/shared/constants/i18n";
 import { AddressForm } from "./address-form";
 import { defaultAddress, deleteAddress, saveAddress } from "./service";
 import { useAddresses } from "./use-addresses";

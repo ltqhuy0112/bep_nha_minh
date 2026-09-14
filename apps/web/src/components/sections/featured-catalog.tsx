@@ -4,12 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/layout/container";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { useCatalogProducts } from "@/features/catalog/hooks/use-catalog";
-import { formatPrice, getProductPresentation } from "@/features/catalog/presentation";
-import type { CatalogLocale } from "@/features/catalog/types";
+import { useCatalogProducts } from "@/features/catalog/public";
+import { formatPrice } from "@/lib/money";
+import { getProductPresentation } from "@/lib/product-presentation";
+import type { Locale } from "@bep-nha-minh/shared/constants/i18n";
 
 type FeaturedCatalogProps = {
-  locale: CatalogLocale;
+  locale: Locale;
 };
 
 export function FeaturedCatalog({ locale }: FeaturedCatalogProps) {

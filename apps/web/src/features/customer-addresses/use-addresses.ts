@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { CustomerAddress } from "@bep-nha-minh/shared/schemas/customer-address";
-import { authPath } from "../customer-auth/routes";
-import type { Locale } from "../customer-auth/types";
+import { authPath } from "../customer-auth/public";
+import type { Locale } from "@bep-nha-minh/shared/constants/i18n";
 import { AddressRequestError, listAddresses } from "./service";
 import { addressCopy } from "./copy";
 
