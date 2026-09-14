@@ -90,6 +90,14 @@ test("client may reference a module-level Server Action but not an inline direct
   assert.equal(graphViolations(sources).length, 1);
 });
 
+test("BFF infrastructure stays behind the server-only boundary", () => {
+  const sources = new Map([
+    ["apps/web/src/client.tsx", '"use client"; import { isHttpOrigin } from "@/lib/bff/http";'],
+    ["apps/web/src/lib/bff/http.ts", 'import "server-only"; export function isHttpOrigin() {}']
+  ]);
+  assert.ok(graphViolations(sources).some((failure) => failure.includes("lib/bff/http.ts -> server-only")));
+});
+
 test("public pages and catalog respect module boundaries; legacy admin is unchanged", () => {
   const backend = ["@bep-nha-minh/api/data/site-content"];
   assert.equal(publicBoundaryViolations("apps/web/src/app/[locale]/page.tsx", backend).length, 1);

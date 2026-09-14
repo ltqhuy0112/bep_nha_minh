@@ -1,5 +1,6 @@
 import "server-only";
 import type { NextRequest } from "next/server";
+import { isHttpOrigin } from "@/lib/bff/http";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -10,7 +11,7 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
   if (!(path.length === 1 && path[0] === "provinces") && !(path.length === 3 && path[0] === "provinces" && /^[0-9]{2}$/.test(path[1]) && path[2] === "wards")) return error(404, "NOT_FOUND");
   try {
     const upstream = new URL(process.env.COMMERCE_API_URL ?? "http://127.0.0.1:3001");
-    if (!["http:", "https:"].includes(upstream.protocol) || upstream.username || upstream.password || upstream.pathname !== "/" || upstream.search || upstream.hash) return error(503, "NOT_CONFIGURED");
+    if (!isHttpOrigin(upstream)) return error(503, "NOT_CONFIGURED");
     const response = await fetch(new URL(`/api/v1/locations/${path.join("/")}`, upstream), { cache: "no-store", redirect: "error", signal: AbortSignal.timeout(10000) });
     const data = await response.json();
     if (data?.version !== "v1" || (!Object.hasOwn(data, "data") && !Object.hasOwn(data, "error"))) return error(502, "UPSTREAM_UNAVAILABLE");

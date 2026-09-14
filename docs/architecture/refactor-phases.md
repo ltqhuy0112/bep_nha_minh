@@ -271,7 +271,7 @@ At completion, document all remaining feature-to-feature dependencies and why th
 
 Status: COMPLETE (local verification: source check, 8 architecture/presentation
 tests, typecheck, lint and production build passed). No production deployment or
-live auth/database verification was performed. Phase 2 has not started.
+live auth/database verification was performed. See the Phase 2 record below for subsequent work.
 
 ## Dependency inventory and decisions
 
@@ -370,3 +370,66 @@ standard internal error mapping
 request ID propagation
 common content-type
 ```
+
+## Phase 2 implementation record
+
+Status: COMPLETE. Local source check, 9 architecture tests, 6 HTTP helper tests,
+three isolated proxy suites, typecheck, lint and production build passed.
+
+### BFF inventory
+
+| Route group | Behavior retained | Extraction decision |
+| --- | --- | --- |
+| cart | Ordering gate; guest/session cookie validation; strict POST origin; Zod command/envelope checks; no-store; 10s fetch timeout; safe guest cookies only on success | Share strict HTTP origin predicate, 16 KiB/5s body reader, private headers and numeric Retry-After |
+| customer-addresses | Required unique session cookie; method/path allowlist; strict mutation origin; case-sensitive JSON media type; v1 envelope; no-store; 10s fetch; no Set-Cookie | Same four primitives as cart; route-local errors and 400/401/403/405/413/415 behavior retained |
+| locations | Credential-free; root upstream URL; 10s no-store fetch; validated v1 envelope; public 300s cache only for successful downstream response | Reuse origin predicate only; keep cache/error headers and 503/502 mapping local |
+| catalog | Anonymous reads; query/path allowlists; 8s abort covers body read; raw arrayBuffer response; no-store | Keep separate: not the same JSON parser, URL defaulting or timeout policy |
+| customer-auth and OAuth | Cookie allowlists; auth-specific duplicate handling; origin rules; normal JSON vs manual OAuth redirects; 10s/45s fetch; separate body reader without deadline | Unchanged. Do not silently add cart/address body timeout or stricter root URL policy |
+| admin/auth/session, waitlist, site-content, health | Existing local handlers/services rather than commerce fetch proxies | Not moved into BFF helpers; legacy boundary remains |
+| docs/openapi | Documentation responses with independent public cache/security headers | Unchanged |
+
+Upstream URL parsing stays in each route: cart maps malformed URLs to its 503
+configuration error, while addresses/locations retain their existing catch behavior.
+Catalog uses `||` for its env default; other routes use `??`. These are not merged.
+No env value is captured at module initialization by the helpers.
+
+### Frontend services
+
+Cart owns initialization dedupe, command/version semantics, 15s abort forwarding,
+and CartRequestError. Catalog owns its caller-provided abort signal and status-only
+error. Auth owns in-flight config/session sharing, same-origin credentials and
+envelope errors. These request functions are not interchangeable and remain local.
+No new request-ID/tracing propagation, automatic retry, generic error mapper or
+catch-and-null JSON parser is introduced: those would change behavior or trust rules.
+
+### New server-only infrastructure
+
+```text
+apps/web/src/lib/bff/
+  http.ts          root HTTP origin predicate, private headers, numeric Retry-After
+  request-body.ts  cart/address body policy: 16 KiB, 5s, cancellation and lock release
+```
+
+Route files still own methods, paths, auth/CSRF, cookie forwarding, JSON validation,
+fetch options and endpoint error codes. `privateResponseHeaders` is copied into a
+new Headers instance before mutation. No helpers are exported to client features.
+Architecture coverage now explicitly tests the BFF server-only boundary.
+
+### Focused verification commands
+
+```sh
+npm run verify:source
+npx tsx --test scripts/verify/architecture.test.ts
+node --conditions=react-server --import tsx --test scripts/verify/bff-http.test.ts
+node --conditions=react-server --import tsx scripts/verify/cart-proxy.ts
+node --conditions=react-server --import tsx scripts/verify/customer-addresses-proxy.ts
+node --conditions=react-server --import tsx scripts/verify/locations-proxy.ts
+npm run typecheck
+npm run lint
+npm run build
+```
+
+Proxy checks use mocked fetch, not a database or provider. Body tests cover absent
+and empty bodies, UTF-8 split chunks, exact/overflow byte limits, read failure,
+five-second timeout, cancellation and lock release. No live OAuth/email tests or
+deploy operations are required for this extraction. Phase 3 is not implemented.
