@@ -14,15 +14,16 @@ services:
       npm ci --include=dev &&
       npm run lint &&
       npm run typecheck &&
+      npm run verify:source &&
+      npx --no-install tsx --test scripts/verify/architecture.test.ts &&
+      node --conditions=react-server --import tsx --test scripts/verify/bff-http.test.ts &&
       npm run verify:prelaunch &&
-      npm run db:up &&
-      npm run locations:sync &&
-      npm run db:seed:catalog &&
-      npm run db:configure:slots &&
-      npm run admin:create -- --email=admin@bepnhaminh.com --name="Bếp Nhà Mình admin" --role=SUPER_ADMIN
+      npm run db:up
+    # Free services do not support preDeployCommand. Only API owns migrations.
+    # Seed/reference-data setup and admin creation are explicit one-time operations.
     startCommand: npm --workspace @bep-nha-minh/api run start
     autoDeployTrigger: commit
-    healthCheckPath: /api/v1/health/live
+    healthCheckPath: /api/v1/health/ready
     envVars:
       - key: API_HOST
         value: 0.0.0.0
@@ -33,7 +34,21 @@ services:
       - key: NEXT_PUBLIC_ORDERING_ENABLED
         value: 'false'
       - key: CUSTOMER_AUTH_ENABLED
-        value: 'true'
+        sync: false
+      - key: CUSTOMER_AUTH_SESSION_POLICY
+        value: fixed-revoke-on-password-reset
+      - key: CUSTOMER_AUTH_RATE_LIMIT_KEY
+        sync: false
+      # Keep existing deployment-stage and production approval values in Environment.
+      # Never set approvals automatically just to bypass the runtime security gate.
+      - key: DEPLOYMENT_STAGE
+        sync: false
+      - key: CUSTOMER_AUTH_OAUTH_VERIFIED
+        sync: false
+      - key: CUSTOMER_AUTH_SECURITY_POLICY_APPROVED
+        sync: false
+      - key: CUSTOMER_AUTH_OPERATIONS_APPROVED
+        sync: false
 
       - key: DATABASE_URL
         fromDatabase:
@@ -51,7 +66,19 @@ services:
     region: ohio
     runtime: node
     plan: free
-    buildCommand: npm ci --include=dev && npm run lint && npm run typecheck && npm run verify:prelaunch && npm run build && node scripts/deploy/prepare-standalone.cjs
+    buildCommand: >
+      npm ci --include=dev &&
+      npm run lint &&
+      npm run typecheck &&
+      npm run verify:source &&
+      npx --no-install tsx --test scripts/verify/architecture.test.ts &&
+      node --conditions=react-server --import tsx --test scripts/verify/bff-http.test.ts &&
+      node --conditions=react-server --import tsx scripts/verify/cart-proxy.ts &&
+      npm run verify:customer-addresses:proxy &&
+      npm run verify:locations:proxy &&
+      npm run verify:prelaunch &&
+      npm run build &&
+      node scripts/deploy/prepare-standalone.cjs
     startCommand: npm --workspace @bep-nha-minh/web run start
     autoDeployTrigger: commit
     envVars:
@@ -64,7 +91,7 @@ services:
       - key: NEXT_PUBLIC_ORDERING_ENABLED
         value: 'false'
       - key: CUSTOMER_AUTH_ENABLED
-        value: 'true'
+        sync: false
 
       - key: DATABASE_URL
         fromDatabase:
