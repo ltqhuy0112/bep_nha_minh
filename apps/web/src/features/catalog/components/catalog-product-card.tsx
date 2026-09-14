@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import { AddToCartButton } from "@/features/cart/components/add-to-cart-button";
+import { AddToCartButton } from "@/features/cart/public";
 import { orderingEnabled } from "@/lib/ordering";
 import { copyFor } from "../copy";
-import { formatPrice, getProductPresentation } from "../presentation";
+import { formatPrice } from "@/lib/money";
+import { getProductPresentation } from "@/lib/product-presentation";
 import type { CatalogLocale, CatalogProduct } from "../types";
 
 export function CatalogProductCard({ product, locale, eager = false }: { product: CatalogProduct; locale: CatalogLocale; eager?: boolean }) {

@@ -1,7 +1,7 @@
 import { logoPath } from "@/lib/site";
-import type { CatalogLocale } from "./types";
+import type { Locale } from "@bep-nha-minh/shared/constants/i18n";
 
-type ProductPresentation = { image: string; alt: Record<CatalogLocale, string> };
+type ProductPresentation = { image: string; alt: Record<Locale, string> };
 
 const productPresentation: Record<string, ProductPresentation> = {
   "grilled-chicken-rice": {
@@ -22,17 +22,9 @@ const productPresentation: Record<string, ProductPresentation> = {
   }
 };
 
-export function getProductPresentation(slug: string, locale: CatalogLocale) {
+export function getProductPresentation(slug: string, locale: Locale) {
   const presentation = productPresentation[slug];
   return presentation
     ? { image: presentation.image, alt: presentation.alt[locale] }
     : { image: logoPath, alt: "Bếp Nhà Mình" };
-}
-
-export function formatPrice(value: number, currency: string, locale: CatalogLocale) {
-  return new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US", {
-    style: "currency",
-    currency,
-    maximumFractionDigits: 0
-  }).format(value);
 }

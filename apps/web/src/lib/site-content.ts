@@ -4,5 +4,3 @@ export const siteContents = createSiteContents({
   instagramUrl: process.env.NEXT_PUBLIC_INSTAGRAM_URL,
   facebookUrl: process.env.NEXT_PUBLIC_FACEBOOK_URL
 });
-export const siteContent = siteContents.vi;
-export const preferredMealOptions = siteContent.waitlist.form.options;

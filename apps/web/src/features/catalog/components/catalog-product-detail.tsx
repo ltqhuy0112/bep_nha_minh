@@ -4,11 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useSyncExternalStore } from "react";
 import { Container } from "@/components/layout/container";
-import { AddToCartButton } from "@/features/cart/components/add-to-cart-button";
+import { AddToCartButton } from "@/features/cart/public";
 import { orderingEnabled } from "@/lib/ordering";
 import { copyFor } from "../copy";
 import { useAvailability, useCatalogProduct, useFulfillmentSlots } from "../hooks/use-catalog";
-import { formatPrice, getProductPresentation } from "../presentation";
+import { formatPrice } from "@/lib/money";
+import { getProductPresentation } from "@/lib/product-presentation";
 import type { CatalogLocale, ProductAvailability } from "../types";
 import { StateMessage } from "./catalog-menu";
 

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { siteContents } from "@bep-nha-minh/api/data/site-content";
+import { siteContents } from "@/lib/site-content";
 import {
   defaultLocale,
   isLocale,
